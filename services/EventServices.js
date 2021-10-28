@@ -1,4 +1,10 @@
 import {
+	fStorage,
+	uploadBytesResumable,
+	ref,
+	getDownloadURL,
+} from "../firebase/firebase.js";
+import {
 	BadRequestError,
 	InternalServerError,
 	NotFoundError,
@@ -29,12 +35,10 @@ export const createEventService = async (eventInfo, eventRepo) => {
 // @return: list of events
 export const getEventsService = async (eventRepo) => {
 	const responseData = await eventRepo.getEvents();
-	if (responseData) {
+	if (responseData.length > 0) {
 		return responseData;
 	} else {
-		throw new InternalServerError(
-			"Something went wrong while fetching the events from the db"
-		);
+		throw new NotFoundError("No Events found");
 	}
 };
 
@@ -153,4 +157,24 @@ export const getChatMessagesService = async (eid, eventRepo) => {
 	}
 
 	throw new NotFoundError("No chat history found.");
+};
+
+export const uploadEventImageFirebaseService = async (
+	eid,
+	eventRepo,
+	imageFile
+) => {
+	if (!eid) {
+		throw new BadRequestError("No event id found. Please try again.");
+	}
+	const imagePathRef = ref(fStorage, `events/${eid}.jpeg`);
+
+	await uploadBytesResumable(imagePathRef, imageFile.data);
+	const imageurl = await getDownloadURL(imagePathRef);
+	const response = await eventRepo.updateEvent(eid, { imageurl });
+	if (response) {
+		return response;
+	} else {
+		throw new InternalServerError("Failed to upload image.");
+	}
 };
