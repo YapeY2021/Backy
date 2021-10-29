@@ -2,16 +2,16 @@ import {
 	BadRequestError,
 	NotFoundError,
 	InternalServerError,
-} from "../types/Errors.js";
+} from "../../utilities/types/Errors.js";
 import brcypt from "bcrypt";
 import {
 	appDomain,
 	Constants,
 	tokenExpirationTime,
-} from "../utilities/Constants.js";
-import generateToken from "../utilities/generateToken.js";
-import { checkCollegeEmail } from "../utilities/emailValidators.js";
-import sendEmail from "../utilities/email/sendEmail.js";
+} from "../../utilities/Constants.js";
+import generateToken from "../../utilities/generateToken.js";
+import { checkCollegeEmail } from "../../utilities/emailValidators.js";
+import sendEmail from "../../utilities/email/sendEmail.js";
 // import redisClient from "../Configs/redisConfig.js";
 import jwt from "jsonwebtoken";
 

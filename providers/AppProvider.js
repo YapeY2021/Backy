@@ -1,8 +1,8 @@
-import ExpressApplication from "../Container/ExpressApplication.js";
+import ExpressApplication from "../container/ExpressApplication.js";
 
 export default function (container) {
-  // creates and return a new express application object
-  container.service("App", () =>
-    new ExpressApplication(container).createExpressApp()
-  );
+	// creates and return a new express application object
+	container.service("App", () =>
+		new ExpressApplication(container).createExpressApp()
+	);
 }

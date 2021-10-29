@@ -1,4 +1,4 @@
-import RedisKeys from "../types/RedisKeys.js";
+import RedisKeys from "../../utilities/types/RedisKeys.js";
 import RedisClient from "./RedisClient.js";
 
 // Manages all the user related database operations

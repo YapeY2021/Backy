@@ -1,4 +1,4 @@
-import { tables } from "../types/Tables.js";
+import { tables } from "../../utilities/types/Tables.js";
 
 // Manages all the user related database operations
 class EventRepo {

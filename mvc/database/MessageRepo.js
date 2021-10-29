@@ -1,4 +1,4 @@
-import { tables } from "../types/Tables.js";
+import { tables } from "../../utilities/types/Tables.js";
 
 class MessageRepo {
 	constructor(dbConnection) {

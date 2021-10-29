@@ -1,4 +1,4 @@
-import Database from "../database/Database.js";
+import Database from "../mvc/database/Database.js";
 import { Migrate } from "../scripts/migrate.js";
 import { Seed } from "../scripts/seed.js";
 import DatabaseMock from "../__test__/__mocks__/database.mock.js";
