@@ -30,9 +30,50 @@ export const Seed = async (dbConnection) => {
 			password: "password",
 		});
 
+		// -----------------------------------------EVENTS------------------------------------
 		await dbConnection(tables.EVENTS).insert({
-			name: "asdgasd",
-			hostname: "amir",
+			name: "ravi birthday party",
+			hostname: "John Jr. Doe",
+		});
+
+		await dbConnection(tables.EVENTS).insert({
+			name: "Aavash birthday party",
+			hostname: "John Jr. Doe",
+		});
+
+		await dbConnection(tables.EVENTS).insert({
+			name: "Graduation party",
+			hostname: "John Jr. Doe",
+		});
+
+		await dbConnection(tables.EVENTS).insert({
+			name: "Graduation party",
+			hostname: "John Jr. Doe",
+		});
+
+		// -----------------------------------------PARTICIPANTS------------------------------------
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "1",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "2",
+			eid: "1",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "2",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "3",
+			accessrole: "HOST",
 		});
 
 		await dbConnection(tables.PARTICIPANTS).insert({
@@ -43,7 +84,13 @@ export const Seed = async (dbConnection) => {
 
 		await dbConnection(tables.PARTICIPANTS).insert({
 			uid: "2",
-			eid: "1",
+			eid: "3",
+			accessrole: "READ",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "4",
 			accessrole: "READ",
 		});
 

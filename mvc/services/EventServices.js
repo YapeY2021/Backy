@@ -130,6 +130,88 @@ export const jointEventService = async (uid, eid, accessRole, eventRepo) => {
 	}
 };
 
+export const getMyEventsService = async (uid, eventRepo) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.getMyEvents(uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const getUnAttendedEventsService = async (uid, eventRepo) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.getUnAttendedEvents(uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const getAttendingEventsService = async (uid, eventRepo) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.getAttendingEvents(uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+// filters events based on the value provided by the user
+export const filterEventsService = async (value, eventRepo) => {
+	if (!value) {
+		throw new BadRequestError("No value provided to filter events.");
+	}
+
+	const responseData = await eventRepo.filterEvents(value);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+// sort events based on the value provided by the user
+export const sortEventService = async (
+	sort = EVENTSORT.NAME,
+	order = SORTORDER.ASC,
+	eventRepo
+) => {
+	const responseData = await eventRepo.sortEvents(sort, order);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
 export const seeEventParticipantsService = async (eid, eventRepo) => {
 	if (!eid) {
 		throw new BadRequestError("Event ID Missing");

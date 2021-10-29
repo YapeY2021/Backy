@@ -4,7 +4,7 @@
 
 # -------------------------------------CRUD-------------------------------
 
-# -------------------------------------CREATE-----------------------------
+# -------------------------------------POST-----------------------------
 
 # Create a new event
 # name and hostname is required. 
@@ -32,6 +32,8 @@
 # }
 
 
+
+
 # ------------------------------------GET-------------------------------
 
 # fetches all the events from the backend
@@ -39,6 +41,12 @@
 
 # Uncomment line below
 # GET http://localhost:5002/api/events
+
+# fetches all the events from the backend unattended by user
+# Endpoint format: base_url/api/events/new/:uid
+
+# Uncomment line below
+# GET http://localhost:5002/api/events/new/1 HTTP/1.1
 
 
 # fetch a single event by id 
@@ -78,6 +86,47 @@
 # Uncomment line below
 # DELETE http://localhost:5002/api/events/1
 
+
+# -----------------------------------PARTICIPATION TABLE----------------
+
+# fetches the list of events created by the user
+# Endpoint format: base_url/api/events/myevents/:uid where uid is user id
+
+# Uncomment line below
+# GET http://localhost:5002/api/events/myevents/3
+
+
+# fetches the list of events user is going to attend
+# Endpoint format: base_url/api/events/attendingevents/:uid where uid is user id
+
+# Uncomment line below
+# GET http://localhost:5002/api/events/attendingevents/3
+
+
+# ----------------------------------Filter & Sort operation-------------------
+# filter events based on the value provided by the user
+# Endpoint format: base_url/api/events/filter 
+
+# Uncomment line below
+# POST http://localhost:5002/api/events/filter HTTP/1.1
+# content-type: application/json
+
+# {
+#     "value":"John"
+# }
+
+
+# sort events based on the value provided by the user
+# Endpoint format: base_url/api/events/sort 
+
+# Uncomment line below
+# POST http://localhost:5002/api/events/sort HTTP/1.1
+# content-type: application/json
+
+# {
+#     "sort":"created_at",
+#     "order":"asc"
+# }
 
 
 

@@ -1,3 +1,4 @@
+import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import { tables } from "../../utilities/types/Tables.js";
 
 // Manages all the user related database operations
@@ -34,6 +35,19 @@ class EventRepo {
 	async getEvents() {
 		const event = await this.dbConnection(tables.EVENTS).select();
 		return event;
+	}
+
+	// gets unattended events by the user
+	async getUnAttendedEvents(uid) {
+		const events = await this.dbConnection.raw(
+			`SELECT * FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
+		);
+
+		if (events.rows) {
+			return events.rows;
+		} else {
+			return events;
+		}
 	}
 
 	async createEvent(eventInfo) {
@@ -84,9 +98,55 @@ class EventRepo {
 				`${tables.USERS}.uid`,
 				`${tables.PARTICIPANTS}.uid`
 			)
-			.select(`${tables.USERS}.firstname`, `${tables.USERS}.lastname`)
+			.select(
+				`${tables.USERS}.firstname`,
+				`${tables.USERS}.lastname`,
+				`${tables.PARTICIPANTS}.accessrole`
+			)
 			.where({ eid: eid });
 		return event;
+	}
+
+	// fetches all the user created events
+	async getMyEvents(uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
+		return events;
+	}
+
+	// fetches all the events attended by user
+	async getAttendingEvents(uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.READ });
+		return events;
+	}
+
+	async filterEvents(value) {
+		const events = await this.dbConnection(tables.EVENTS)
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`);
+		return events;
+	}
+
+	async sortEvents(sort, order) {
+		const events = await this.dbConnection(tables.EVENTS).orderBy(
+			sort,
+			order
+		);
+		return events;
 	}
 
 	// fetches recent 20 messages by event id

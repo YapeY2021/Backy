@@ -2,14 +2,20 @@ import express from "express";
 import {
 	createEventController,
 	deleteEventController,
+	filterEventsController,
+	getAttendingEventsController,
 	getChatsController,
 	getEventByIdController,
 	getEventsController,
+	getMyEventsController,
+	getUnAttendedEventsController,
 	jointEventController,
 	seeEventParticipantsController,
+	sortEventController,
 	updateEventController,
 	uploadImageController,
 } from "../controllers/eventControllers.js";
+import { getMyEventsService } from "../services/EventServices.js";
 
 class EventRoute {
 	constructor(eventRepo) {
@@ -24,6 +30,12 @@ class EventRoute {
 			.route("/")
 			.post(async (req, res, next) =>
 				createEventController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/new/:uid")
+			.get(async (req, res, next) =>
+				getUnAttendedEventsController(req, res, next, this.eventRepo)
 			);
 		this.router
 			.route("/")
@@ -46,12 +58,36 @@ class EventRoute {
 				deleteEventController(req, res, next, this.eventRepo)
 			);
 
-		//-----------------------------------Event Chat related routes-------------------------------------------
+		//-----------------------------------Additional event related routes-----------------------------------------
+
+		this.router
+			.route("/myevents/:uid")
+			.get(async (req, res, next) =>
+				getMyEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/attendingevents/:uid")
+			.get(async (req, res, next) =>
+				getAttendingEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/filter")
+			.post(async (req, res, next) =>
+				filterEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/sort")
+			.post(async (req, res, next) =>
+				sortEventController(req, res, next, this.eventRepo)
+			);
 
 		this.router
 			.route("/:eid/join")
 			.post(async (req, res, next) =>
-				jointEventController(req, res, next, this.eventRepo)
+				getAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
 		this.router

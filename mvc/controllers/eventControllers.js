@@ -10,6 +10,11 @@ import {
 	deleteEventService,
 	getChatMessagesService,
 	uploadEventImageFirebaseService,
+	getMyEventsService,
+	getAttendingEventsService,
+	filterEventsService,
+	sortEventService,
+	getUnAttendedEventsService,
 } from "../services/EventServices.js";
 import {
 	BadRequestError,
@@ -17,6 +22,7 @@ import {
 } from "../../utilities/types/Errors.js";
 import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
+import { EVENTSORT, SORTORDER } from "../../utilities/types/ENUMS.js";
 
 export const createEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
@@ -154,6 +160,101 @@ export const seeEventParticipantsController = asyncHandler(
 			);
 
 			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns all the events not attended by the user
+export const getUnAttendedEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const uid = req.params.uid;
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			const responseData = await getUnAttendedEventsService(
+				uid,
+				eventRepo
+			);
+
+			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns all the user created events
+export const getMyEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const uid = req.params.uid;
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			const responseData = await getMyEventsService(uid, eventRepo);
+
+			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns all the events the user is going to attend
+export const getAttendingEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const uid = req.params.uid;
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			const responseData = await getAttendingEventsService(
+				uid,
+				eventRepo
+			);
+
+			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns filtered list of events
+export const filterEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { value } = req.body;
+			if (!value) {
+				throw new BadRequestError(
+					"No value provided to filter events."
+				);
+			}
+
+			const responseData = await filterEventsService(value, eventRepo);
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns sorted list of events by user provided value
+export const sortEventController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
+
+			const responseData = await sortEventService(sort, order, eventRepo);
+			res.status(200).json(responseData);
+			return "";
 		} catch (e) {
 			next(e);
 		}
