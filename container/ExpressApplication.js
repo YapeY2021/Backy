@@ -3,7 +3,7 @@ import path from "path";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import fileUpload from "express-fileupload";
-import { errorHandler } from "../middlewares/errorMiddleware.js";
+import { errorHandler } from "../mvc/middlewares/errorMiddleware.js";
 
 class ExpressApplication {
 	constructor(container) {

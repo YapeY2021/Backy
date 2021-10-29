@@ -11,9 +11,12 @@ import {
 	getChatMessagesService,
 	uploadEventImageFirebaseService,
 } from "../services/EventServices.js";
-import { BadRequestError, NotAuthorizedError } from "../types/Errors.js";
-import { EventAccessRoles } from "../types/EventAccessRoles.js";
-import ReqBodyPolisher from "../utilities/ReqBodyPolisher.js";
+import {
+	BadRequestError,
+	NotAuthorizedError,
+} from "../../utilities/types/Errors.js";
+import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
+import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
 
 export const createEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
@@ -169,20 +172,20 @@ export const uploadImageController = asyncHandler(
 
 			// name of the input is imageFile
 			imageFile = req.files.imageFile;
-			uploadPath = dirname + "/upload/" + eid + ".jpg";
+			// uploadPath = dirname + "/upload/" + eid + ".jpg";
 
-			// Use mv() to place file on the server
-			imageFile.mv(uploadPath, async function (err) {
-				if (err) return res.status(500).send(err);
+			// // Use mv() to place file on the server
+			// imageFile.mv(uploadPath, async function (err) {
+			// 	if (err) return res.status(500).send(err);
 
-				console.log("File uploaded");
-				const response = await uploadEventImageFirebaseService(
-					eid,
-					eventRepo,
-					imageFile
-				);
-				res.status(200).json(response);
-			});
+			// 	console.log("File uploaded");
+			const response = await uploadEventImageFirebaseService(
+				eid,
+				eventRepo,
+				imageFile
+			);
+			res.status(200).json(response);
+			// });
 		} catch (e) {
 			next(e);
 		}

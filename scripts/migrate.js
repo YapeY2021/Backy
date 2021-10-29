@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { tables } from "../types/Tables.js";
+import { tables } from "../utilities/types/Tables.js";
 export const Migrate = async (dbConnection) => {
 	try {
 		console.log(

@@ -2,7 +2,7 @@ import {
 	BadRequestError,
 	InternalServerError,
 	NotFoundError,
-} from "../types/Errors.js";
+} from "../../utilities/types/Errors.js";
 
 // @desc    Get a list of user from the db
 // @input: nothing

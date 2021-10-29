@@ -1,10 +1,10 @@
 import supertest from "supertest";
 import faker from "faker";
-import AppManager from "../../Container/AppManager.js";
+import AppManager from "../../container/AppManager.js";
 import sinon from "sinon";
 import userRepoMock from "../__mocks__/UserRepo.mock.js";
 import { beforeAll } from "@jest/globals";
-import UserRepo from "../../database/UserRepo.js";
+import UserRepo from "../../mvc/database/UserRepo.js";
 
 let am = AppManager();
 const app = am.App;

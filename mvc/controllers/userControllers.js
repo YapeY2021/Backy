@@ -6,14 +6,17 @@ import {
 	updateUserService,
 	getUserByIdService,
 } from "../services/UserServices.js";
-import { BadRequestError, NotAuthorizedError } from "../types/Errors.js";
+import {
+	BadRequestError,
+	NotAuthorizedError,
+} from "../../utilities/types/Errors.js";
 import {
 	authUserService,
 	forgotPasswordService,
 	registerUserService,
 	resetPasswordService,
 } from "../services/AutheticationServices.js";
-import ReqBodyPolisher from "../utilities/ReqBodyPolisher.js";
+import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
 
 // @desc    Register a new user
 // @route   POST /api/users/signup

@@ -3,12 +3,12 @@ import {
 	uploadBytesResumable,
 	ref,
 	getDownloadURL,
-} from "../firebase/firebase.js";
+} from "../../firebase/firebase.js";
 import {
 	BadRequestError,
 	InternalServerError,
 	NotFoundError,
-} from "../types/Errors.js";
+} from "../../utilities/types/Errors.js";
 
 export const createEventService = async (eventInfo, eventRepo) => {
 	if (!eventInfo.name) {

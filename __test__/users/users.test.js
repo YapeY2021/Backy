@@ -2,7 +2,7 @@ import supertest from "supertest";
 import faker from "faker";
 import sinon from "sinon";
 import bcrypt from "bcrypt";
-import AppManager from "../../Container/AppManager.js";
+import AppManager from "../../container/AppManager.js";
 
 let am = AppManager();
 const app = am.App;

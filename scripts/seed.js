@@ -1,6 +1,6 @@
 import chalk from "chalk";
-import { EventAccessRoles } from "../types/EventAccessRoles.js";
-import { tables } from "../types/Tables.js";
+import { EventAccessRoles } from "../utilities/types/EventAccessRoles.js";
+import { tables } from "../utilities/types/Tables.js";
 
 export const Seed = async (dbConnection) => {
 	try {
