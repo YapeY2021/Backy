@@ -1,11 +1,99 @@
-# const url = "http://localhost:5002"
+# const development = "http://localhost:5002"
+# const production = 'https://donnchad-server.herokuapp.com/'
 
 
 # fetches all the user from the backend
-# GET http://127.0.0.1:5002/api/users
+# development
+# GET http://localhost:5002/api/users
+# production
+# GET https://donnchad-server.herokuapp.com/api/users
+
+
+
+#-----------create-----------#
+
+
+# # create a new user from the backend
+# 
+
+#  POST http://localhost:5002/api/users/signup HTTP/1.1
+#  content-type: application/json
+
+#  {
+#     "email":"a@patriots.uttyler.edu",
+#     "password":"password",
+#     "firstname":"Amir",
+#     "lastname":"Pahadi",
+#     "phonenumber":"9035088579"
+# }
+
+
+# # login user from the backend
+# POST http://localhost:5002/api/users/login HTTP/1.1
+#   content-type: application/json
+
+# {
+#     "email":"a@patriots.uttyler.edu",
+#     "password":"password"
+# }
+
+# # forget password from the backend
+# POST http://localhost:5002/api/users/forgot-password HTTP/1.1
+#   content-type: application/json
+
+# {
+#     "email":"a@patriots.uttyler.edu",
+# }
+
+# # update new password from the backend
+# POST http://localhost:5002/api/users/forgot-password HTTP/1.1
+#   content-type: application/json
+
+# {
+#     "newPassword":"newpassword1",
+# }
+
+
+
+
+
+
+
+
+#-----------read-----------#
+
+
+
+
+
+# fetch a users from the backend
+# GET http://localhost:5002/api/users
+
 
 
 # fetch a single user from the backend
-# GET http://127.0.0.1:5002/api/users/1
+# GET http://localhost:5002/api/users/1
+
+
+
+
+#-----------update-----------#
+
+# update a user from the backend
+# PUT http://localhost:5002/api/users/1
+#   content-type: application/json
+
+# {
+#     "lastname":"Pahadi",
+#     "phonenumber":"9035088589"
+# }
+
+
+
+#-----------delete-----------#
+
+# delete a user from the backend
+# DEL http://localhost:5002 /api/users/3
+
 
 
