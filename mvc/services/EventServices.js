@@ -141,7 +141,7 @@ export const getMyEventsService = async (uid, eventRepo) => {
 		return responseData;
 	} else {
 		throw new InternalServerError(
-			"Something went wrong while fetching event participants"
+			"Something went wrong while fetching events."
 		);
 	}
 };
@@ -149,6 +149,16 @@ export const getMyEventsService = async (uid, eventRepo) => {
 export const getAttendingEventsService = async (uid, eventRepo) => {
 	if (!uid) {
 		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.getAttendingEvents(uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
 	}
 };
 

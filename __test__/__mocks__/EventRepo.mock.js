@@ -132,8 +132,9 @@ class EventRepoMock {
 
 	async createEvent(eventInfo) {}
 
-	// fetches all the user created events
 	async getMyEvents(uid) {}
+
+	async getAttendingEvents(uid) {}
 }
 
 export default EventRepoMock;

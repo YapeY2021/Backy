@@ -105,8 +105,19 @@ class EventRepo {
 			.select()
 			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
 		return events;
+	}
 
-		// .where({ accessRole: EventAccessRoles.HOST, uid: uid })
+	// fetches all the events attended by user
+	async getAttendingEvents(uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.READ });
+		return events;
 	}
 
 	// fetches recent 20 messages by event id
