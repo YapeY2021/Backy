@@ -12,6 +12,8 @@ class EventRepoMock {
 	async filterEvents(value) {}
 
 	async sortEvents(sort, order) {}
+
+	async getUnAttendedEvents(uid) {}
 }
 
 export default EventRepoMock;

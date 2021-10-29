@@ -8,6 +8,7 @@ import {
 	getEventByIdController,
 	getEventsController,
 	getMyEventsController,
+	getUnAttendedEventsController,
 	jointEventController,
 	seeEventParticipantsController,
 	sortEventController,
@@ -29,6 +30,12 @@ class EventRoute {
 			.route("/")
 			.post(async (req, res, next) =>
 				createEventController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/new/:uid")
+			.get(async (req, res, next) =>
+				getUnAttendedEventsController(req, res, next, this.eventRepo)
 			);
 		this.router
 			.route("/")

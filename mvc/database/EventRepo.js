@@ -37,6 +37,19 @@ class EventRepo {
 		return event;
 	}
 
+	// gets unattended events by the user
+	async getUnAttendedEvents(uid) {
+		const events = await this.dbConnection.raw(
+			`SELECT * FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
+		);
+
+		if (events.rows) {
+			return events.rows;
+		} else {
+			return events;
+		}
+	}
+
 	async createEvent(eventInfo) {
 		const event = await this.dbConnection(tables.EVENTS)
 			.insert(eventInfo)

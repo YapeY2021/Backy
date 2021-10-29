@@ -309,4 +309,25 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		}
 		repoStub.restore();
 	});
+
+	it("POST api/events/new/:uid -> fetch list of unattended events for user", async () => {
+		var repoStub = sinon
+			.stub(db, "getUnAttendedEvents")
+			.callsFake(() => Promise.resolve([dummyEvent1]));
+
+		const response = await request
+			.get("/api/events/new/1")
+			.expect("Content-Type", /json/)
+			.expect(200);
+		if (response.body && response.body.length > 0) {
+			expect(response.body[0]).toEqual(
+				expect.objectContaining({
+					name: expect.any(String),
+					hostname: "Greek Affairs",
+					eid: expect.any(Number),
+				})
+			);
+		}
+		repoStub.restore();
+	});
 });

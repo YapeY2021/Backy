@@ -14,6 +14,7 @@ import {
 	getAttendingEventsService,
 	filterEventsService,
 	sortEventService,
+	getUnAttendedEventsService,
 } from "../services/EventServices.js";
 import {
 	BadRequestError,
@@ -155,6 +156,27 @@ export const seeEventParticipantsController = asyncHandler(
 			}
 			const responseData = await seeEventParticipantsService(
 				eid,
+				eventRepo
+			);
+
+			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns all the events not attended by the user
+export const getUnAttendedEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const uid = req.params.uid;
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			const responseData = await getUnAttendedEventsService(
+				uid,
 				eventRepo
 			);
 
