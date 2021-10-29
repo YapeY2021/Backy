@@ -9,6 +9,7 @@ import {
 	registerUserController,
 	resetPasswordController,
 	updateUser,
+	uploadUserImageController,
 } from "../controllers/userControllers.js";
 
 class UserRoute {
@@ -91,6 +92,22 @@ class UserRoute {
 					next,
 					this.userRepo,
 					this.tokenRedisRepo
+				)
+			);
+
+		this.router
+			.route("/:uid/image/dummy")
+			.get(async (req, res, next) => res.render("upload_image"));
+
+		this.router
+			.route("/:uid/image")
+			.post(async (req, res, next) =>
+				uploadUserImageController(
+					req,
+					res,
+					next,
+					process.cwd(),
+					this.userRepo
 				)
 			);
 

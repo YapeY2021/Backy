@@ -20,6 +20,7 @@ export const Migrate = async (dbConnection) => {
 				table.string("email", 100).notNullable();
 				table.string("password", 100).notNullable();
 				table.string("phonenumber", 100);
+				table.string("imageurl", 1000);
 				table.timestamps(true, true);
 			});
 		// console.log("Created users relation.");
