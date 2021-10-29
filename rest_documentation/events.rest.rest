@@ -95,16 +95,29 @@
 # GET http://localhost:5002/api/events/attendingevents/3
 
 
-# ----------------------------------Filter operation-------------------
+# ----------------------------------Filter & Sort operation-------------------
 # filter events based on the value provided by the user
 # Endpoint format: base_url/api/events/filter 
 
 # Uncomment line below
-POST http://localhost:5002/api/events/filter HTTP/1.1
+# POST http://localhost:5002/api/events/filter HTTP/1.1
+# content-type: application/json
+
+# {
+#     "value":"John"
+# }
+
+
+# sort events based on the value provided by the user
+# Endpoint format: base_url/api/events/sort 
+
+# Uncomment line below
+POST http://localhost:5002/api/events/sort HTTP/1.1
 content-type: application/json
 
 {
-    "value":"John"
+    "sort":"created_at",
+    "order":"asc"
 }
 
 

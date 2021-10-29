@@ -13,6 +13,7 @@ import {
 	getMyEventsService,
 	getAttendingEventsService,
 	filterEventsService,
+	sortEventService,
 } from "../services/EventServices.js";
 import {
 	BadRequestError,
@@ -20,6 +21,7 @@ import {
 } from "../../utilities/types/Errors.js";
 import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
+import { EVENTSORT, SORTORDER } from "../../utilities/types/ENUMS.js";
 
 export const createEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
@@ -214,6 +216,21 @@ export const filterEventsController = asyncHandler(
 			}
 
 			const responseData = await filterEventsService(value, eventRepo);
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns sorted list of events by user provided value
+export const sortEventController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
+
+			const responseData = await sortEventService(sort, order, eventRepo);
 			res.status(200).json(responseData);
 			return "";
 		} catch (e) {

@@ -11,13 +11,30 @@ const app = am.App;
 const request = supertest(app);
 
 describe("Tests all CRUD functions for EVENT Service ", () => {
-	let db, dummyEvent1, attendingEvent, createdEvent;
+	let db, dummyEvent1, dummyEvent2, attendingEvent, createdEvent;
 
 	beforeAll(() => {
 		db = am.EventRepo;
 		dummyEvent1 = {
 			eid: 1,
 			name: "National Pan-Hellenic Council Week: Field Game Day",
+			hostname: "Greek Affairs",
+			eventtype: null,
+			location: "Patriot Plaza",
+			starttime: "2021-10-20T22:00:00+00:00",
+			endtime: "2021-10-21T01:00:00+00:00",
+			description:
+				'The National Pan-Hellenic Council is the organization that united the nine\nhistorically African American fraternities and sororities commonly known as the\n"Divine Nine". This event will give students the opportunity to network with\nmembers of NPHC organizations in a lightly competitive atmosphere. Food will be\nprovided to participants. ',
+			contactnumber: null,
+			imageurl:
+				"https://uttyler.campuslabs.com/engage/image/7dc46c8b-0eb8-4b48-ba1a-6a841efd2115d59768c5-58c7-4541-a9e2-c42da539c7e3.png",
+			cid: null,
+			created_at: "2021-10-21T21:35:07.626Z",
+			updated_at: "2021-10-21T21:35:07.626Z",
+		};
+		dummyEvent2 = {
+			eid: 2,
+			name: "Pan-Hellenic Council Week: Field Game Day",
 			hostname: "Greek Affairs",
 			eventtype: null,
 			location: "Patriot Plaza",
@@ -227,7 +244,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		repoStub.restore();
 	});
 
-	it("GET api/events/filter -> when filter value is not provided - 400", async () => {
+	it("POST api/events/filter -> when filter value is not provided - 400", async () => {
 		await request
 			.post("/api/events/filter ")
 			.send({ value: "" })
@@ -235,7 +252,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.expect(400);
 	});
 
-	it("GET api/events/filter -> when we cannot find any event", async () => {
+	it("POST api/events/filter -> when we cannot find any event", async () => {
 		var repoStub = sinon
 			.stub(db, "filterEvents")
 			.callsFake(() => Promise.resolve([]));
@@ -250,7 +267,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		repoStub.restore();
 	});
 
-	it("GET api/events/filter -> filter list of events by user provided value", async () => {
+	it("POST api/events/filter -> filter list of events by user provided value", async () => {
 		var repoStub = sinon
 			.stub(db, "filterEvents")
 			.callsFake(() => Promise.resolve([dummyEvent1]));
@@ -261,6 +278,28 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.expect(200);
 		if (response.body && response.body.length > 0) {
 			expect(response.body[0]).toEqual(
+				expect.objectContaining({
+					name: expect.any(String),
+					hostname: "Greek Affairs",
+					eid: expect.any(Number),
+				})
+			);
+		}
+		repoStub.restore();
+	});
+
+	it("POST api/events/sort -> sort list of events by user provided value", async () => {
+		var repoStub = sinon
+			.stub(db, "sortEvents")
+			.callsFake(() => Promise.resolve([dummyEvent2, dummyEvent1]));
+
+		const response = await request
+			.post("/api/events/sort")
+			.send({ sort: "name", order: "asc" })
+			.expect("Content-Type", /json/)
+			.expect(200);
+		if (response.body && response.body.length > 0) {
+			expect(response.body[1]).toEqual(
 				expect.objectContaining({
 					name: expect.any(String),
 					hostname: "Greek Affairs",

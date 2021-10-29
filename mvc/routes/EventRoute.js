@@ -10,6 +10,7 @@ import {
 	getMyEventsController,
 	jointEventController,
 	seeEventParticipantsController,
+	sortEventController,
 	updateEventController,
 	uploadImageController,
 } from "../controllers/eventControllers.js";
@@ -68,6 +69,12 @@ class EventRoute {
 			.route("/filter")
 			.post(async (req, res, next) =>
 				filterEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/sort")
+			.post(async (req, res, next) =>
+				sortEventController(req, res, next, this.eventRepo)
 			);
 
 		this.router

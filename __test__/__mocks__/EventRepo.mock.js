@@ -10,6 +10,8 @@ class EventRepoMock {
 	async getAttendingEvents(uid) {}
 
 	async filterEvents(value) {}
+
+	async sortEvents(sort, order) {}
 }
 
 export default EventRepoMock;

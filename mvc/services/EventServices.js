@@ -179,6 +179,23 @@ export const filterEventsService = async (value, eventRepo) => {
 	}
 };
 
+// sort events based on the value provided by the user
+export const sortEventService = async (
+	sort = EVENTSORT.NAME,
+	order = SORTORDER.ASC,
+	eventRepo
+) => {
+	const responseData = await eventRepo.sortEvents(sort, order);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
 export const seeEventParticipantsService = async (eid, eventRepo) => {
 	if (!eid) {
 		throw new BadRequestError("Event ID Missing");

@@ -128,6 +128,14 @@ class EventRepo {
 		return events;
 	}
 
+	async sortEvents(sort, order) {
+		const events = await this.dbConnection(tables.EVENTS).orderBy(
+			sort,
+			order
+		);
+		return events;
+	}
+
 	// fetches recent 20 messages by event id
 	async getChatMessages(eid) {
 		const chats = await this.dbConnection(tables.MESSAGE)
