@@ -120,6 +120,14 @@ class EventRepo {
 		return events;
 	}
 
+	async filterEvents(value) {
+		const events = await this.dbConnection(tables.EVENTS)
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`);
+		return events;
+	}
+
 	// fetches recent 20 messages by event id
 	async getChatMessages(eid) {
 		const chats = await this.dbConnection(tables.MESSAGE)

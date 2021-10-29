@@ -12,6 +12,7 @@ import {
 	uploadEventImageFirebaseService,
 	getMyEventsService,
 	getAttendingEventsService,
+	filterEventsService,
 } from "../services/EventServices.js";
 import {
 	BadRequestError,
@@ -195,6 +196,26 @@ export const getAttendingEventsController = asyncHandler(
 			);
 
 			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns filtered list of events
+export const filterEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { value } = req.body;
+			if (!value) {
+				throw new BadRequestError(
+					"No value provided to filter events."
+				);
+			}
+
+			const responseData = await filterEventsService(value, eventRepo);
+			res.status(200).json(responseData);
+			return "";
 		} catch (e) {
 			next(e);
 		}

@@ -89,11 +89,23 @@
 
 
 # fetches the list of events user is going to attend
-# Endpoint format: base_url/api/events/myevents/:uid where uid is user id
+# Endpoint format: base_url/api/events/attendingevents/:uid where uid is user id
 
 # Uncomment line below
-GET http://localhost:5002/api/events/attendingevents/3
+# GET http://localhost:5002/api/events/attendingevents/3
 
+
+# ----------------------------------Filter operation-------------------
+# filter events based on the value provided by the user
+# Endpoint format: base_url/api/events/filter 
+
+# Uncomment line below
+POST http://localhost:5002/api/events/filter HTTP/1.1
+content-type: application/json
+
+{
+    "value":"John"
+}
 
 
 

@@ -2,6 +2,7 @@ import express from "express";
 import {
 	createEventController,
 	deleteEventController,
+	filterEventsController,
 	getAttendingEventsController,
 	getChatsController,
 	getEventByIdController,
@@ -61,6 +62,12 @@ class EventRoute {
 			.route("/attendingevents/:uid")
 			.get(async (req, res, next) =>
 				getAttendingEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/filter")
+			.post(async (req, res, next) =>
+				filterEventsController(req, res, next, this.eventRepo)
 			);
 
 		this.router

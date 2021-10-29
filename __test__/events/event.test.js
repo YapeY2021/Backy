@@ -3,7 +3,7 @@ import faker from "faker";
 import AppManager from "../../container/AppManager.js";
 import sinon from "sinon";
 import userRepoMock from "../__mocks__/UserRepo.mock.js";
-import { beforeAll } from "@jest/globals";
+import { beforeAll, afterAll } from "@jest/globals";
 import UserRepo from "../../mvc/database/UserRepo.js";
 
 let am = AppManager();
@@ -72,6 +72,13 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			created_at: "2021-10-21T21:35:07.626Z",
 			updated_at: "2021-10-21T21:35:07.626Z",
 		};
+	});
+
+	afterAll(() => {
+		db = null;
+		dummyEvent1 = null;
+		createdEvent = null;
+		attendingEvent = null;
 	});
 
 	//------------------------------------------------POST---------------------------------------
@@ -198,12 +205,12 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		repoStub.restore();
 	});
 
-	it("GET api/events/myevents/:uid -> get list of user created events ", async () => {
+	it("GET api/events/attendingevents/:uid -> get list of user attending events ", async () => {
 		var repoStub = sinon
-			.stub(db, "getMyEvents")
+			.stub(db, "getAttendingEvents")
 			.callsFake(() => Promise.resolve([attendingEvent]));
 		const response = await request
-			.get("/api/events/myevents/1")
+			.get("/api/events/attendingevents/1")
 			.expect("Content-Type", /json/)
 			.expect(200);
 		if (response.body && response.body.length > 0) {
@@ -213,6 +220,50 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 					hostname: "Greek Affairs",
 					uid: 1,
 					accessrole: "READ",
+					eid: expect.any(Number),
+				})
+			);
+		}
+		repoStub.restore();
+	});
+
+	it("GET api/events/filter -> when filter value is not provided - 400", async () => {
+		await request
+			.post("/api/events/filter ")
+			.send({ value: "" })
+			.expect("Content-Type", /json/)
+			.expect(400);
+	});
+
+	it("GET api/events/filter -> when we cannot find any event", async () => {
+		var repoStub = sinon
+			.stub(db, "filterEvents")
+			.callsFake(() => Promise.resolve([]));
+		const response = await request
+			.post("/api/events/filter ")
+			.send({ value: "dummy" })
+			.expect("Content-Type", /json/)
+			.expect(200);
+
+		expect(response.body.length).toEqual(0);
+
+		repoStub.restore();
+	});
+
+	it("GET api/events/filter -> filter list of events by user provided value", async () => {
+		var repoStub = sinon
+			.stub(db, "filterEvents")
+			.callsFake(() => Promise.resolve([dummyEvent1]));
+		const response = await request
+			.post("/api/events/filter ")
+			.send({ value: "dummy" })
+			.expect("Content-Type", /json/)
+			.expect(200);
+		if (response.body && response.body.length > 0) {
+			expect(response.body[0]).toEqual(
+				expect.objectContaining({
+					name: expect.any(String),
+					hostname: "Greek Affairs",
 					eid: expect.any(Number),
 				})
 			);
