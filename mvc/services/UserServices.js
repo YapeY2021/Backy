@@ -1,4 +1,10 @@
 import {
+	fStorage,
+	getDownloadURL,
+	ref,
+	uploadBytesResumable,
+} from "../../firebase/firebase.js";
+import {
 	BadRequestError,
 	InternalServerError,
 	NotFoundError,
@@ -88,5 +94,25 @@ export const deleteUserService = async (uid, userRepo) => {
 		throw new InternalServerError(
 			"Something went wrong while deleting the user from the db"
 		);
+	}
+};
+
+export const uploadUserImageFirebaseService = async (
+	uid,
+	userRepo,
+	imageFile
+) => {
+	if (!uid) {
+		throw new BadRequestError("No user id found. Please try again.");
+	}
+	const imagePathRef = ref(fStorage, `users/${uid}.jpeg`);
+
+	await uploadBytesResumable(imagePathRef, imageFile.data);
+	const imageurl = await getDownloadURL(imagePathRef);
+	const response = await userRepo.updateUser({ imageurl }, uid);
+	if (response) {
+		return response;
+	} else {
+		throw new InternalServerError("Failed to upload image.");
 	}
 };
