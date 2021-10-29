@@ -10,6 +10,8 @@ import {
 	deleteEventService,
 	getChatMessagesService,
 	uploadEventImageFirebaseService,
+	getMyEventsService,
+	getAttendingEventsService,
 } from "../services/EventServices.js";
 import {
 	BadRequestError,
@@ -150,6 +152,45 @@ export const seeEventParticipantsController = asyncHandler(
 			}
 			const responseData = await seeEventParticipantsService(
 				eid,
+				eventRepo
+			);
+
+			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns all the user created events
+export const getMyEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const uid = req.params.uid;
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			const responseData = await getMyEventsService(uid, eventRepo);
+
+			res.status(200).json(responseData);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+// returns all the events the user is going to attend
+export const getAttendingEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const uid = req.params.uid;
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			const responseData = await getAttendingEventsService(
+				uid,
 				eventRepo
 			);
 

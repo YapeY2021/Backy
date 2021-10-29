@@ -130,6 +130,28 @@ export const jointEventService = async (uid, eid, accessRole, eventRepo) => {
 	}
 };
 
+export const getMyEventsService = async (uid, eventRepo) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.getMyEvents(uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching event participants"
+		);
+	}
+};
+
+export const getAttendingEventsService = async (uid, eventRepo) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+};
+
 export const seeEventParticipantsService = async (eid, eventRepo) => {
 	if (!eid) {
 		throw new BadRequestError("Event ID Missing");

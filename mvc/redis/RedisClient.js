@@ -28,12 +28,12 @@ const RedisClient = () => {
 		};
 		redisClient = redis.createClient(redisUrl, redisDefaults);
 	} else {
-		redisClient = redis.createClient();
+		redisClient = redis.createClient(6379, "localhost");
 	}
 
 	redisClient.on("connect", function () {
 		console.log(
-			chalk.yellow.bold(
+			chalk.red.bold(
 				`------------------------Redis client connected ------------------`
 			)
 		);

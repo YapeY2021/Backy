@@ -135,4 +135,24 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		}
 		repoStub.restore();
 	});
+
+	it("GET api/events/myevents/:uid -> get list of user created events ", async () => {
+		var repoStub = sinon
+			.stub(db, "getMyEvents")
+			.callsFake(() => Promise.resolve([dummyEvent]));
+		const response = await request
+			.get("/api/events/myevents/1")
+			.expect("Content-Type", /json/)
+			.expect(200);
+		if (response.body && response.body.length > 0) {
+			expect(response.body[0]).toEqual(
+				expect.objectContaining({
+					name: expect.any(String),
+					hostname: "Greek Affairs",
+					eid: expect.any(Number),
+				})
+			);
+		}
+		repoStub.restore();
+	});
 });

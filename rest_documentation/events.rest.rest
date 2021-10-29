@@ -79,6 +79,15 @@
 # DELETE http://localhost:5002/api/events/1
 
 
+# -----------------------------------PARTICIPATION TABLE----------------
+
+# fetches the list of events created by the user
+# Endpoint format: base_url/api/events/myevents/:uid where uid is user id
+
+# Uncomment line below
+# GET http://localhost:5002/api/events/myevents/3
+
+
 
 
 

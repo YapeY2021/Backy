@@ -2,14 +2,17 @@ import express from "express";
 import {
 	createEventController,
 	deleteEventController,
+	getAttendingEventsController,
 	getChatsController,
 	getEventByIdController,
 	getEventsController,
+	getMyEventsController,
 	jointEventController,
 	seeEventParticipantsController,
 	updateEventController,
 	uploadImageController,
 } from "../controllers/eventControllers.js";
+import { getMyEventsService } from "../services/EventServices.js";
 
 class EventRoute {
 	constructor(eventRepo) {
@@ -46,12 +49,24 @@ class EventRoute {
 				deleteEventController(req, res, next, this.eventRepo)
 			);
 
-		//-----------------------------------Event Chat related routes-------------------------------------------
+		//-----------------------------------Additional event related routes-----------------------------------------
+
+		this.router
+			.route("/myevents/:uid")
+			.get(async (req, res, next) =>
+				getMyEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/attendingevents/:uid")
+			.get(async (req, res, next) =>
+				getAttendingEventsController(req, res, next, this.eventRepo)
+			);
 
 		this.router
 			.route("/:eid/join")
 			.post(async (req, res, next) =>
-				jointEventController(req, res, next, this.eventRepo)
+				getAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
 		this.router

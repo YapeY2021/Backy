@@ -1,3 +1,4 @@
+import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import { tables } from "../../utilities/types/Tables.js";
 
 // Manages all the user related database operations
@@ -84,9 +85,28 @@ class EventRepo {
 				`${tables.USERS}.uid`,
 				`${tables.PARTICIPANTS}.uid`
 			)
-			.select(`${tables.USERS}.firstname`, `${tables.USERS}.lastname`)
+			.select(
+				`${tables.USERS}.firstname`,
+				`${tables.USERS}.lastname`,
+				`${tables.PARTICIPANTS}.accessrole`
+			)
 			.where({ eid: eid });
 		return event;
+	}
+
+	// fetches all the user created events
+	async getMyEvents(uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
+		return events;
+
+		// .where({ accessRole: EventAccessRoles.HOST, uid: uid })
 	}
 
 	// fetches recent 20 messages by event id
