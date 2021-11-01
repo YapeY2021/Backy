@@ -28,7 +28,13 @@ const RedisClient = () => {
 		};
 		redisClient = redis.createClient(redisUrl, redisDefaults);
 	} else {
-		redisClient = redis.createClient(6379, "localhost");
+		const PORT = process.env.REDIS_PORT || 6379;
+		let host = "localhost";
+
+		if (process.env.NODE_ENV === "Front") {
+			host = "redis";
+		}
+		redisClient = redis.createClient(PORT, host);
 	}
 
 	redisClient.on("connect", function () {

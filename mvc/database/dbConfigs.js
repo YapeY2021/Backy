@@ -1,4 +1,4 @@
-const devConfig = {
+const devConfig_b = {
 	client: "postgres",
 	connection: {
 		host: "localhost",
@@ -8,6 +8,21 @@ const devConfig = {
 	},
 };
 
+const devConfig_f = {
+	client: "postgres",
+	connection: {
+		host: "db",
+		user: "postgres",
+		password: "password",
+		database: "postgres",
+	},
+};
+
+let devConfig = devConfig_b;
+
+if (process.env.NODE_ENV === "Front") {
+	devConfig = devConfig_f;
+}
 // const DATABASE_URL = `postgres://postgres:password@postgres:5431`;
 
 // const devConfig = {
