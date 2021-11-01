@@ -97,7 +97,7 @@ class UserRoute {
 
 		this.router
 			.route("/:uid/image/dummy")
-			.get(async (req, res, next) => res.render("upload_image"));
+			.get(async (req, res) => res.render("upload_image"));
 
 		this.router
 			.route("/:uid/image")

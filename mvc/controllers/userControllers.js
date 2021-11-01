@@ -174,29 +174,22 @@ export const uploadUserImageController = asyncHandler(
 	async (req, res, next, dirname, userRepo) => {
 		const uid = req.params.uid;
 		let imageFile;
-		let uploadPath;
 		try {
 			if (!req.files || Object.keys(req.files).length === 0) {
 				return res.status(400).send("No files were uploaded.");
 			}
 
 			// name of the input is imageFile
-			imageFile = req.files.imageFile;
-			uploadPath = dirname + "/upload/" + uid + ".jpg";
+			imageFile = req.files.file;
 
-			// Use mv() to place file on the server
-			imageFile.mv(uploadPath, async function (err) {
-				if (err) return res.status(500).send(err);
-
-				console.log("File uploaded");
-				const response = await uploadUserImageFirebaseService(
-					uid,
-					userRepo,
-					imageFile
-				);
-				res.status(200).json(response);
-			});
+			const response = await uploadUserImageFirebaseService(
+				uid,
+				userRepo,
+				imageFile
+			);
+			res.status(200).json(response);
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
