@@ -8,8 +8,7 @@ import {
 	getUsers,
 	registerUserController,
 	resetPasswordController,
-	updateUser,
-	uploadUserImageController,
+	updateUserController,
 } from "../controllers/userControllers.js";
 
 class UserRoute {
@@ -61,10 +60,11 @@ class UserRoute {
 			.get(async (req, res, next) =>
 				getUserById(req, res, next, this.userRepo)
 			);
+
 		this.router
-			.route("/:uid")
+			.route("/:uid/")
 			.put(async (req, res, next) =>
-				updateUser(req, res, next, this.userRepo)
+				updateUserController(req, res, next, this.userRepo)
 			);
 		this.router
 			.route("/:uid")
@@ -98,18 +98,6 @@ class UserRoute {
 		this.router
 			.route("/:uid/image/dummy")
 			.get(async (req, res) => res.render("upload_image"));
-
-		this.router
-			.route("/:uid/image")
-			.post(async (req, res, next) =>
-				uploadUserImageController(
-					req,
-					res,
-					next,
-					process.cwd(),
-					this.userRepo
-				)
-			);
 
 		return this.router;
 	}
