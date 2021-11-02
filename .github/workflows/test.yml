@@ -2,9 +2,10 @@ name: Test Action
 
 on:
     push:
-        branches: [master, image_feature_integration]
+        branches:
+            - master
+            - image_feature_integration
     pull_request:
-        branches: [master, image_feature_integration]
 
 jobs:
     test:
