@@ -1,4 +1,5 @@
 import asyncHandler from "express-async-handler";
+import parseJson from "parse-json";
 
 import {
 	deleteUserService,
@@ -18,6 +19,7 @@ import {
 	resetPasswordService,
 } from "../services/AutheticationServices.js";
 import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
+import { tables } from "../../utilities/types/Tables.js";
 
 // @desc    Register a new user
 // @route   POST /api/users/signup
@@ -88,25 +90,6 @@ export const getUserById = asyncHandler(async (req, res, next, userRepo) => {
 	}
 });
 
-// @desc    Update user account
-// @route   PUT /api/users/:uid
-// @access  Private
-export const updateUser = asyncHandler(async (req, res, next, userRepo) => {
-	const uid = parseInt(req.params.uid);
-
-	try {
-		const userInfo = ReqBodyPolisher.polishUser(req.body);
-
-		// updates user information in the db
-		const responseData = await updateUserService(userInfo, uid, userRepo);
-
-		// response handling
-		res.status(200).json(responseData);
-	} catch (e) {
-		next(e);
-	}
-});
-
 // @desc    Delete user account
 // @route   DELETE /api/users/:uid
 // @access  Public
@@ -170,32 +153,43 @@ export const resetPasswordController = asyncHandler(
 	}
 );
 
-export const uploadUserImageController = asyncHandler(
-	async (req, res, next, dirname, userRepo) => {
+// @desc    Update user account
+// @route   PUT /api/users/:uid
+// @access  Private
+export const updateUserController = asyncHandler(
+	async (req, res, next, userRepo) => {
 		const uid = req.params.uid;
 		let imageFile;
-		let uploadPath;
+		let userInfo;
+
 		try {
-			if (!req.files || Object.keys(req.files).length === 0) {
-				return res.status(400).send("No files were uploaded.");
+			if (req.body && req.body.user) {
+				const polishedBody = ReqBodyPolisher.polishUser(req.body.user);
+				if (polishedBody) {
+					userInfo = parseJson(polishedBody);
+				}
 			}
+			// if (!req.files || Object.keys(req.files).length === 0) {
+			// 	return res.status(400).send("No files were uploaded.");
+			// }
 
-			// name of the input is imageFile
-			imageFile = req.files.imageFile;
-			uploadPath = dirname + "/upload/" + uid + ".jpg";
-
-			// Use mv() to place file on the server
-			imageFile.mv(uploadPath, async function (err) {
-				if (err) return res.status(500).send(err);
-
-				console.log("File uploaded");
-				const response = await uploadUserImageFirebaseService(
-					uid,
+			if (req.files && req.files.file) {
+				imageFile = req.files.file;
+				console.log(imageFile);
+				userInfo = await uploadUserImageFirebaseService(
+					`${tables.USERS}/${uid}.jpeg`,
 					userRepo,
 					imageFile
 				);
-				res.status(200).json(response);
-			});
+			}
+
+			if (!userInfo) {
+				throw new BadRequestError("No information to update");
+			}
+
+			const response = await updateUserService(userInfo, uid, userRepo);
+
+			res.status(200).json(response);
 		} catch (e) {
 			next(e);
 		}

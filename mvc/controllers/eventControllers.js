@@ -23,6 +23,8 @@ import {
 import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
 import { EVENTSORT, SORTORDER } from "../../utilities/types/ENUMS.js";
+import { tables } from "../../utilities/types/Tables.js";
+import { uploadUserImageFirebaseService } from "../services/UserServices.js";
 
 export const createEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
@@ -76,7 +78,15 @@ export const updateEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
 			const eid = parseInt(req.params.eid);
-			const eventInfo = ReqBodyPolisher.polishEvent(req.body);
+			let eventInfo;
+
+			if (req.body && req.body.user) {
+				const polishedBody = ReqBodyPolisher.polishEvent(req.body);
+
+				if (polishedBody) {
+					eventInfo = parseJson(polishedBody);
+				}
+			}
 			//Event id missing added
 			if (!eid) {
 				throw new BadRequestError("Event ID Missing");
@@ -86,6 +96,24 @@ export const updateEventController = asyncHandler(
 			if (!eventInfo.name) {
 				throw new BadRequestError("Event Name Missing");
 			}
+			//Event host name missing added
+			if (!eventInfo.hostname) {
+				throw new BadRequestError("Event Host Name Missing");
+			}
+
+			if (req.files && req.files.file) {
+				imageFile = req.files.file;
+				console.log(imageFile);
+				userInfo = await uploadUserImageFirebaseService(
+					`${tables.EVENTS}/${eid}.jpeg`,
+					userRepo,
+					imageFile
+				);
+			}
+
+			if (!eventInfo) {
+				throw new BadRequestError("No information to update");
+			}
 
 			const responseData = await updateEventService(
 				eid,
@@ -93,7 +121,7 @@ export const updateEventController = asyncHandler(
 				eventRepo
 			);
 
-			res.status(201).json(responseData);
+			res.status(200).json(responseData);
 		} catch (e) {
 			next(e);
 		}
@@ -265,28 +293,20 @@ export const uploadImageController = asyncHandler(
 	async (req, res, next, dirname, eventRepo) => {
 		const eid = req.params.eid;
 		let imageFile;
-		let uploadPath;
 		try {
 			if (!req.files || Object.keys(req.files).length === 0) {
 				return res.status(400).send("No files were uploaded.");
 			}
 
 			// name of the input is imageFile
-			imageFile = req.files.imageFile;
-			// uploadPath = dirname + "/upload/" + eid + ".jpg";
+			imageFile = req.files.file;
 
-			// // Use mv() to place file on the server
-			// imageFile.mv(uploadPath, async function (err) {
-			// 	if (err) return res.status(500).send(err);
-
-			// 	console.log("File uploaded");
 			const response = await uploadEventImageFirebaseService(
 				eid,
 				eventRepo,
 				imageFile
 			);
 			res.status(200).json(response);
-			// });
 		} catch (e) {
 			next(e);
 		}

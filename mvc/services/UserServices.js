@@ -98,18 +98,18 @@ export const deleteUserService = async (uid, userRepo) => {
 };
 
 export const uploadUserImageFirebaseService = async (
-	uid,
+	imageName,
 	userRepo,
 	imageFile
 ) => {
-	if (!uid) {
+	if (!imageName) {
 		throw new BadRequestError("No user id found. Please try again.");
 	}
-	const imagePathRef = ref(fStorage, `users/${uid}.jpeg`);
+	const imagePathRef = ref(fStorage, imageName);
 
 	await uploadBytesResumable(imagePathRef, imageFile.data);
 	const imageurl = await getDownloadURL(imagePathRef);
-	const response = await userRepo.updateUser({ imageurl }, uid);
+	const response = await userRepo.updateUser({ imageurl }, imageName);
 	if (response) {
 		return response;
 	} else {

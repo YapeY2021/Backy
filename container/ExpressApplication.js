@@ -22,12 +22,11 @@ class ExpressApplication {
 		this.app.use(fileUpload());
 
 		// Static Files
-		this.app.use(express.static("public"));
+		this.app.use(express.static("mvc/public"));
 		this.app.use(express.static("upload"));
 
-		this.app.set("views", "views");
+		this.app.set("views", "mvc/views");
 		this.app.set("view engine", "ejs");
-		this.app.use(express.static("public"));
 
 		// json body parser middleware
 		this.app.use(express.json());
