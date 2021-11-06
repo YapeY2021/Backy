@@ -1,6 +1,6 @@
-import UserRepo from "../database/UserRepo.js";
+import UserRepo from "../mvc/database/UserRepo.js";
 import UserRepoMock from "../__test__/__mocks__/UserRepo.mock.js";
-import UserRoute from "../routes/UserRoute.js";
+import UserRoute from "../mvc/routes/UserRoute.js";
 
 export default function (container) {
 	container.service("UserRepo", (container) => {
@@ -12,6 +12,9 @@ export default function (container) {
 		}
 	});
 	container.service("UserRoute", (container) =>
-		new UserRoute(container.UserRepo).createUserRoute()
+		new UserRoute(
+			container.UserRepo,
+			container.TokenRedisRepo
+		).createUserRoute()
 	);
 }

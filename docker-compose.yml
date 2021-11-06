@@ -1,31 +1,33 @@
 version: "3.3"
 
 services:
-  db:
-    image: "postgres"
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DATABASE: "postgres"
+    db:
+        image: "postgres"
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "password"
+            POSTGRES_DATABASE: "postgres"
+    redis:
+        image: "redis:latest"
+        ports:
+            - "6379:6379"
 
-  # server:
-  #   build: .
-  #   ports:
-  #     - "5000:5000"
-  #   environment:
-  #     POSTGRES_PASSWORD: "password"
-  #     POSTGRES_USER: "donnchad"
-  #     JWT_SECRET: "SanskarRandiHo"
-  # db:
-  #   image: "postgres"
-  #   ports:
-  #     - "4321:5431"
-  #   environment:
-  #     POSTGRES_PASSWORD: "password"
-  #     POSTGRES_USER: "donnchad"
-  # redis:
-  #   image: "redis"
-  #   ports:
-  #     - "6379:6379"
+    # server:
+    #     build: .
+    #     ports:
+    #         - "5002:5002"
+    #     depends_on:
+    #         - "db"
+    #         - "redis"
+    #     environment:
+    #         POSTGRES_USER: "postgres"
+    #         POSTGRES_PASSWORD: "password"
+    #         POSTGRES_DATABASE: "postgres"
+    #         JWT_SECRET: "SanskarRandiHo"
+    #         NODE_ENV: "Front"
+    #         EMAIL_HOST: smtp.gmail.com
+    #         EMAIL_USERNAME: yapey21
+    #         EMAIL_PASSWORD: DonnChadYapey21
+    #         FROM_EMAIL: yapey21@gmail.com

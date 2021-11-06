@@ -1,24 +1,43 @@
-name: Node.js
+name: Test Action
 
 on:
     push:
-        branches: [main, master]
+        branches:
+            - master
+            - image_feature_integration
     pull_request:
-        branches: [main, master]
 
 jobs:
-    build:
+    job_1:
+        runs-on: ubuntu-18.04
+        steps:
+            - run: echo JOB1
+    test:
+        name: Running Units Tests
         runs-on: ubuntu-latest
-
-        strategy:
-            matrix:
-                node-version: [10.x, 12.x, 14.x, 15.x]
-
         steps:
             - uses: actions/checkout@v2
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2
               with:
                   node-version: ${{ matrix.node-version }}
-            - name: Install dependencies
+            - name: Install
+            - run: npm install
+            - name: Test
             - run: npm test
+            - env:
+                  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+                  NODE_ENV: ${{ secrets.NODE_ENV }}
+                  PORT: ${{ secrets.PORT }}
+                  DBUSER: ${{ secrets.DBUSER }}
+                  DBHOST: ${{ secrets.DBHOST }}
+                  DBNAME: ${{ secrets.DBNAME }}
+                  DBPASSWORD: ${{ secrets.DBPASSWORD }}
+                  DBPORT: ${{ secrets.DBPORT }}
+
+                  REDIS_PORT: ${{ secrets.REDIS_PORT }}
+
+                  EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+                  EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+                  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+                  FROM_EMAIL: ${{ secrets.FROM_EMAIL }}

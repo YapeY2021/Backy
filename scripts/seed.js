@@ -1,6 +1,6 @@
 import chalk from "chalk";
-import { EventAccessRoles } from "../types/EventAccessRoles.js";
-import { tables } from "../types/Tables.js";
+import { EventAccessRoles } from "../utilities/types/EventAccessRoles.js";
+import { tables } from "../utilities/types/Tables.js";
 
 export const Seed = async (dbConnection) => {
 	try {
@@ -26,8 +26,72 @@ export const Seed = async (dbConnection) => {
 		await dbConnection(tables.USERS).insert({
 			firstname: "John Jr.",
 			lastname: "Doe",
-			email: "simedid556@forfity.com",
+			email: "sidoho3089@d3bb.com",
 			password: "password",
+		});
+
+		// -----------------------------------------EVENTS------------------------------------
+		await dbConnection(tables.EVENTS).insert({
+			name: "ravi birthday party",
+			hostname: "John Jr. Doe",
+		});
+
+		await dbConnection(tables.EVENTS).insert({
+			name: "Aavash birthday party",
+			hostname: "John Jr. Doe",
+		});
+
+		await dbConnection(tables.EVENTS).insert({
+			name: "Graduation party",
+			hostname: "John Jr. Doe",
+		});
+
+		await dbConnection(tables.EVENTS).insert({
+			name: "Graduation party",
+			hostname: "John Jr. Doe",
+		});
+
+		// -----------------------------------------PARTICIPANTS------------------------------------
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "1",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "2",
+			eid: "1",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "2",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "3",
+			accessrole: "HOST",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "1",
+			eid: "1",
+			accessrole: "READ",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "2",
+			eid: "3",
+			accessrole: "READ",
+		});
+
+		await dbConnection(tables.PARTICIPANTS).insert({
+			uid: "3",
+			eid: "4",
+			accessrole: "READ",
 		});
 
 		console.log(

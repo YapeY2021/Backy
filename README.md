@@ -16,6 +16,10 @@ This project contains the backend for our social management app (https://github.
 3. Run command "docker-compose up" to start the containers.
 4. remote api: https://donnchad-server.herokuapp.com/
 
+# Backend Architecture:
+
+<img src="https://user-images.githubusercontent.com/36856709/139370113-073b44d3-ae0a-431d-adc0-1c629eb66d00.jpeg" width="525" height="475" />
+
 # Description
 
 -   Users:
@@ -29,7 +33,6 @@ This project contains the backend for our social management app (https://github.
     -   Reset Password: `POST /api/users/:uid/forgot-password`
 
 -   Events:
-
     -   Create a new event: `POST /api/events/`
     -   Get a list of evenets: `GET /api/events`
     -   Get an event by id: `GET /api/events/:eid`

@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { tables } from "../types/Tables.js";
+import { tables } from "../utilities/types/Tables.js";
 export const Migrate = async (dbConnection) => {
 	try {
 		console.log(
@@ -20,6 +20,7 @@ export const Migrate = async (dbConnection) => {
 				table.string("email", 100).notNullable();
 				table.string("password", 100).notNullable();
 				table.string("phonenumber", 100);
+				table.string("imageurl", 1000);
 				table.timestamps(true, true);
 			});
 		// console.log("Created users relation.");
@@ -90,7 +91,6 @@ export const Migrate = async (dbConnection) => {
 		await dbConnection.raw(
 			`CREATE UNIQUE INDEX cmi ON ${tables.MESSAGE} (eid,mid DESC)`
 		);
-		// console.log(`index eid created for ${tables.MESSAGE}`);
 	} catch (err) {
 		console.log(err);
 	}
