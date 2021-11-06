@@ -154,7 +154,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.post("/api/events/")
 			.send({ hostname, name })
 			.expect("Content-Type", /json/)
-			.expect(200);
+			.expect(201);
 		if (response.body && response.body.length > 0) {
 			expect(response.body[0]).toEqual(
 				expect.objectContaining({
@@ -200,134 +200,88 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		repoStub.restore();
 	});
 
-	it("GET api/events/myevents/:uid -> get list of user created events ", async () => {
+	it("GET /api/events/:id -> event does not exist 404 ", async () => {
 		var repoStub = sinon
-			.stub(db, "getMyEvents")
-			.callsFake(() => Promise.resolve([createdEvent]));
-		const response = await request
-			.get("/api/events/myevents/1")
-			.expect("Content-Type", /json/)
-			.expect(200);
-		if (response.body && response.body.length > 0) {
-			expect(response.body[0]).toEqual(
-				expect.objectContaining({
-					name: expect.any(String),
-					uid: 1,
-					hostname: "Greek Affairs",
-					accessrole: "HOST",
-					eid: expect.any(Number),
-				})
-			);
-		}
-		repoStub.restore();
-	});
-
-	it("GET api/events/attendingevents/:uid -> get list of user attending events ", async () => {
-		var repoStub = sinon
-			.stub(db, "getAttendingEvents")
-			.callsFake(() => Promise.resolve([attendingEvent]));
-		const response = await request
-			.get("/api/events/attendingevents/1")
-			.expect("Content-Type", /json/)
-			.expect(200);
-		if (response.body && response.body.length > 0) {
-			expect(response.body[0]).toEqual(
-				expect.objectContaining({
-					name: expect.any(String),
-					hostname: "Greek Affairs",
-					uid: 1,
-					accessrole: "READ",
-					eid: expect.any(Number),
-				})
-			);
-		}
-		repoStub.restore();
-	});
-
-	it("POST api/events/filter -> when filter value is not provided - 400", async () => {
+			.stub(db, "getEventbyId")
+			.callsFake(() => Promise.resolve(null));
 		await request
-			.post("/api/events/filter ")
-			.send({ value: "" })
+			.get("/api/events/-1")
 			.expect("Content-Type", /json/)
-			.expect(400);
-	});
-
-	it("POST api/events/filter -> when we cannot find any event", async () => {
-		var repoStub = sinon
-			.stub(db, "filterEvents")
-			.callsFake(() => Promise.resolve([]));
-		const response = await request
-			.post("/api/events/filter ")
-			.send({ value: "dummy" })
-			.expect("Content-Type", /json/)
-			.expect(200);
-
-		expect(response.body.length).toEqual(0);
+			.expect(404);
 
 		repoStub.restore();
 	});
 
-	it("POST api/events/filter -> filter list of events by user provided value", async () => {
+	it("GET /api/events/:id -> event exists 200 ", async () => {
 		var repoStub = sinon
-			.stub(db, "filterEvents")
-			.callsFake(() => Promise.resolve([dummyEvent1]));
-		const response = await request
-			.post("/api/events/filter ")
-			.send({ value: "dummy" })
+			.stub(db, "getEventbyId")
+			.callsFake(() => Promise.resolve(dummyEvent));
+		await request
+			.get("/api/events/1")
 			.expect("Content-Type", /json/)
 			.expect(200);
-		if (response.body && response.body.length > 0) {
-			expect(response.body[0]).toEqual(
-				expect.objectContaining({
-					name: expect.any(String),
-					hostname: "Greek Affairs",
-					eid: expect.any(Number),
-				})
-			);
-		}
+
 		repoStub.restore();
 	});
 
-	it("POST api/events/sort -> sort list of events by user provided value", async () => {
+	//--------UPDATE
+	it("PUT /api/events/:id -> update event that does not exist - 404", async () => {
+		const name = faker.commerce.productName();
 		var repoStub = sinon
-			.stub(db, "sortEvents")
-			.callsFake(() => Promise.resolve([dummyEvent2, dummyEvent1]));
-
+			.stub(db, "checkEventbyId")
+			.callsFake(() => Promise.resolve(false));
 		const response = await request
-			.post("/api/events/sort")
-			.send({ sort: "name", order: "asc" })
+			.put("/api/events/-1")
+			.send({ name })
 			.expect("Content-Type", /json/)
-			.expect(200);
-		if (response.body && response.body.length > 0) {
-			expect(response.body[1]).toEqual(
-				expect.objectContaining({
-					name: expect.any(String),
-					hostname: "Greek Affairs",
-					eid: expect.any(Number),
-				})
-			);
-		}
+			.expect(404);
 		repoStub.restore();
 	});
 
-	it("POST api/events/new/:uid -> fetch list of unattended events for user", async () => {
+	it("PUT /api/events/:id -> update event that does exist- 200", async () => {
+		const name = faker.commerce.productName();
 		var repoStub = sinon
-			.stub(db, "getUnAttendedEvents")
-			.callsFake(() => Promise.resolve([dummyEvent1]));
+			.stub(db, "checkEventbyId")
+			.callsFake(() => Promise.resolve(true));
 
+		var repoStub2 = sinon
+			.stub(db, "updateEvent")
+			.callsFake(() => Promise.resolve(dummyEvent));
+		await request
+			.put("/api/events/1")
+			.send({ name })
+			.expect("Content-Type", /json/)
+			.expect(201);
+		repoStub.restore();
+		repoStub2.restore();
+	});
+
+	// ---- delete
+	it("DELETE /api/events/:id -> delete event that does not exist - 404", async () => {
+		const name = faker.commerce.productName();
+		var repoStub = sinon
+			.stub(db, "checkEventbyId")
+			.callsFake(() => Promise.resolve(false));
 		const response = await request
-			.get("/api/events/new/1")
+			.delete("/api/events/-1")
+			.expect("Content-Type", /json/)
+			.expect(404);
+		repoStub.restore();
+	});
+
+	it("DELETE /api/events/:id -> delete event that does exist - 200", async () => {
+		const name = faker.commerce.productName();
+		var repoStub = sinon
+			.stub(db, "checkEventbyId")
+			.callsFake(() => Promise.resolve(true));
+		var repoStub2 = sinon
+			.stub(db, "deleteUser")
+			.callsFake(() => Promise.resolve(true));
+		const response = await request
+			.delete("/api/events/1")
 			.expect("Content-Type", /json/)
 			.expect(200);
-		if (response.body && response.body.length > 0) {
-			expect(response.body[0]).toEqual(
-				expect.objectContaining({
-					name: expect.any(String),
-					hostname: "Greek Affairs",
-					eid: expect.any(Number),
-				})
-			);
-		}
+		repoStub2.restore();
 		repoStub.restore();
 	});
 });

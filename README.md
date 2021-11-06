@@ -21,7 +21,9 @@ This project contains the backend for our social management app (https://github.
 <img src="https://user-images.githubusercontent.com/36856709/139370113-073b44d3-ae0a-431d-adc0-1c629eb66d00.jpeg" width="525" height="475" />
 
 # Description
+
 -   Users:
+
     -   Register new user: `POST /api/users/signup`
     -   Login existing user: `POST /api/users/login`
     -   Get a list of users: `GET /api/users`
