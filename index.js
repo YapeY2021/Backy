@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import http from "http";
 import nodeCron from "node-cron";
-import AppManager from "./Container/AppManager.js";
+import AppManager from "./container/AppManager.js";
 import chalk from "chalk";
 import WebSocketWrapper from "./websocket/WebSocketWrapper.js";
 
