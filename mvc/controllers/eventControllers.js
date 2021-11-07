@@ -19,6 +19,7 @@ import {
 import {
 	BadRequestError,
 	NotAuthorizedError,
+	NotFoundError,
 } from "../../utilities/types/Errors.js";
 import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
@@ -79,19 +80,21 @@ export const updateEventController = asyncHandler(
 		try {
 			const eid = parseInt(req.params.eid);
 			let eventInfo;
-
-			if (req.body && req.body.user) {
+			if (req.body && req.body.event) {
 				const polishedBody = ReqBodyPolisher.polishEvent(req.body);
-
 				if (polishedBody) {
 					eventInfo = parseJson(polishedBody);
+				} else {
+					throw new BadRequestError("No information provided.");
 				}
 			}
+
 			//Event id missing added
 			if (!eid) {
-				throw new BadRequestError("Event ID Missing");
+				throw new NotFoundError("Event ID Missing");
 			}
 
+			console.log(eid, eventInfo);
 			//Event name missing added
 			if (!eventInfo.name) {
 				throw new BadRequestError("Event Name Missing");
