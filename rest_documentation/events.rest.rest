@@ -91,7 +91,8 @@
 # Endpoint format: base_url/api/events/myevents/:uid where uid is user id
 
 # Uncomment line below
-# GET http://localhost:5002/api/events/myevents/3
+# GET http://localhost:5002/api/events/myevents/
+
 
 
 # fetches the list of events user is going to attend
