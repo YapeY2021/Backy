@@ -12,6 +12,7 @@ import {
 	seeEventParticipantsController,
 	sortAttendedEventController,
 	sortEventController,
+	sortMyEventsController,
 	sortUnattendedEventController,
 	updateEventController,
 } from "../controllers/eventControllers.js";
@@ -38,6 +39,7 @@ class EventRoute {
 				getUnAttendedEventsController(req, res, next, this.eventRepo)
 			);
 
+		// unattended sort
 		this.router
 			.route("/new/sort")
 			.post(
@@ -83,6 +85,7 @@ class EventRoute {
 				getAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
+		// attending sort
 		this.router
 			.route("/attendingevents/sort")
 			.post(protect, async (req, res, next) =>
