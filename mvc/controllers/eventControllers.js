@@ -321,6 +321,7 @@ export const sortUnattendedEventController = asyncHandler(
 				throw new BadRequestError("Order Missing");
 			}
 			const responseData = await sortUnattendedEventService(
+				uid,
 				sort,
 				order,
 				eventRepo
