@@ -129,6 +129,7 @@ class EventRepo {
 				`${tables.PARTICIPANTS}.eid`
 			)
 			.select()
+
 			.where({ uid: uid, accessrole: EventAccessRoles.READ });
 		return events;
 	}
@@ -149,17 +150,30 @@ class EventRepo {
 		return events;
 	}
 
-	async sortUnattendedEvents(sort, order) {
+	async sortUnattendedEvents(uid, sort, order) {
 		const events = await this.dbConnection(tables.EVENTS)
 			.orderBy(sort, order)
 			.where(uid != uid);
 		return events;
 	}
 
-	async sortAttendedEvents(sort, order) {
+	async sortAttendedEvents(uid, sort, order) {
 		const events = await this.dbConnection(tables.EVENTS)
 			.orderBy(sort, order)
 			.where((uid = uid));
+		return events;
+	}
+
+	async sortMyEvents(uid, sort, order) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.orderBy(sort, order)
+			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
 		return events;
 	}
 
