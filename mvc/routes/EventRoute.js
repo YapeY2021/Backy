@@ -68,11 +68,9 @@ class EventRoute {
 
 		//-----------------------------------Additional event related routes-----------------------------------------
 
-		this.router
-			.route("/myevents/:uid")
-			.get(async (req, res, next) =>
-				getMyEventsController(req, res, next, this.eventRepo)
-			);
+		this.router.route("/myevents/:uid").get(async (req, res, next) => {
+			getMyEventsController(req, res, next, this.eventRepo);
+		});
 		this.router
 			.route("/myevents/sort")
 			.post(protect, async (req, res, next) =>
@@ -81,7 +79,7 @@ class EventRoute {
 
 		this.router
 			.route("/attendingevents/:uid")
-			.get(protect, async (req, res, next) =>
+			.get(async (req, res, next) =>
 				getAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
@@ -93,7 +91,7 @@ class EventRoute {
 
 		this.router
 			.route("/filter")
-			.post(protect, async (req, res, next) =>
+			.post(async (req, res, next) =>
 				filterEventsController(req, res, next, this.eventRepo)
 			);
 
@@ -121,8 +119,6 @@ class EventRoute {
 
 		this.router.route("/:eid/chats").get(async (req, res, next) => {
 			const eid = req.params.eid;
-			console.log(eid);
-			console.log("reached here");
 			getChatsController(req, res, next, this.eventRepo);
 		});
 		return this.router;
