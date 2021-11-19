@@ -9,4 +9,8 @@ const generateToken = (uid, email, expirationTime) => {
 	});
 };
 
+const verifyToken = (token) => {
+	return jwt.verify(token, process.env.JWT_SECRET);
+};
+
 export default generateToken;

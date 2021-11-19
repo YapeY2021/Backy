@@ -14,6 +14,9 @@ import {
 	getAttendingEventsService,
 	filterEventsService,
 	sortEventService,
+	sortUnattendedEventService,
+	sortAttendedEventService,
+	sortMyEventsService,
 	getUnAttendedEventsService,
 } from "../services/EventServices.js";
 import {
@@ -279,10 +282,109 @@ export const sortEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
 			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
-
-			const responseData = await sortEventService(sort, order, eventRepo);
+			const { uid } = req.userInfo;
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
+			}
+			const responseData = await sortEventService(
+				uid,
+				sort,
+				order,
+				eventRepo
+			);
 			res.status(200).json(responseData);
 			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+export const sortUnattendedEventController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
+			const { uid } = req.userInfo;
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
+			}
+			const responseData = await sortUnattendedEventService(
+				uid,
+				sort,
+				order,
+				eventRepo
+			);
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+export const sortAttendedEventController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
+			const { uid } = req.userInfo;
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
+			}
+			const responseData = await sortAttendedEventService(
+				uid,
+				sort,
+				order,
+				eventRepo
+			);
+
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+export const sortMyEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
+			const { uid } = req.userInfo;
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
+			}
+			const responseData = await sortMyEventsService(
+				uid,
+				sort,
+				order,
+				eventRepo
+			);
+
+			res.status(200).json(responseData);
 		} catch (e) {
 			next(e);
 		}

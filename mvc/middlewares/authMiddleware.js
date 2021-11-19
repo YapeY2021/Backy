@@ -1,5 +1,9 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
+import {
+	BadRequestError,
+	NotAuthorizedError,
+} from "../../utilities/types/Errors.js";
 
 // provides protection against unauthorized access
 export const protect = asyncHandler(async (req, res, next) => {
@@ -11,21 +15,21 @@ export const protect = asyncHandler(async (req, res, next) => {
 	) {
 		try {
 			token = req.headers.authorization.split(" ")[1];
+
 			// const decoded = jwt.verify(token, process.env.JWT_SECRET);
 			const verified = jwt.verify(token, process.env.JWT_SECRET);
-
-			req.userInfo = verified;
+			if (verified) {
+				req.userInfo = verified;
+			}
 
 			next();
 		} catch (error) {
 			console.error(error);
-			res.status(401);
-			throw new Error("Not authorized, token failed");
+			throw new NotAuthorizedError("Not authorized, token failed");
 		}
 	}
 
 	if (!token) {
-		res.status(401);
-		throw new Error("Not authorized, no token");
+		throw new NotAuthorizedError("Not authorized, no token");
 	}
 });

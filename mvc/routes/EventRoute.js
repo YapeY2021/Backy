@@ -9,13 +9,14 @@ import {
 	getEventsController,
 	getMyEventsController,
 	getUnAttendedEventsController,
-	jointEventController,
 	seeEventParticipantsController,
+	sortAttendedEventController,
 	sortEventController,
+	sortMyEventsController,
+	sortUnattendedEventController,
 	updateEventController,
-	uploadImageController,
 } from "../controllers/eventControllers.js";
-import { getMyEventsService } from "../services/EventServices.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 class EventRoute {
 	constructor(eventRepo) {
@@ -37,6 +38,15 @@ class EventRoute {
 			.get(async (req, res, next) =>
 				getUnAttendedEventsController(req, res, next, this.eventRepo)
 			);
+
+		// unattended sort
+		this.router
+			.route("/new/sort")
+			.post(
+				protect,
+				async (req, res, next) => sortUnattendedEventController
+			);
+
 		this.router
 			.route("/")
 			.get(async (req, res, next) =>
@@ -60,16 +70,26 @@ class EventRoute {
 
 		//-----------------------------------Additional event related routes-----------------------------------------
 
+		this.router.route("/myevents/:uid").get(async (req, res, next) => {
+			getMyEventsController(req, res, next, this.eventRepo);
+		});
 		this.router
-			.route("/myevents/:uid")
-			.get(async (req, res, next) =>
-				getMyEventsController(req, res, next, this.eventRepo)
+			.route("/myevents/sort")
+			.post(protect, async (req, res, next) =>
+				sortAttendedEventController(req, res, next, this.eventRepo)
 			);
 
 		this.router
 			.route("/attendingevents/:uid")
 			.get(async (req, res, next) =>
 				getAttendingEventsController(req, res, next, this.eventRepo)
+			);
+
+		// attending sort
+		this.router
+			.route("/attendingevents/sort")
+			.post(protect, async (req, res, next) =>
+				sortAttendedEventController(req, res, next, this.eventRepo)
 			);
 
 		this.router
@@ -102,8 +122,6 @@ class EventRoute {
 
 		this.router.route("/:eid/chats").get(async (req, res, next) => {
 			const eid = req.params.eid;
-			console.log(eid);
-			console.log("reached here");
 			getChatsController(req, res, next, this.eventRepo);
 		});
 		return this.router;

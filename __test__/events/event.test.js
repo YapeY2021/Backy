@@ -11,9 +11,11 @@ const app = am.App;
 const request = supertest(app);
 
 describe("Tests all CRUD functions for EVENT Service ", () => {
-	let db, dummyEvent1, dummyEvent2, attendingEvent, createdEvent;
+	let db, dummyEvent1, dummyEvent2, attendingEvents, myEvents, TOKEN;
 
 	beforeAll(() => {
+		TOKEN =
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjQsImVtYWlsIjoiQ0d1bGdvd3NraUBwYXRyaW90cy51dHR5bGVyLmVkdSIsImlhdCI6MTYzNzM1NjcxNiwiZXhwIjoxNjQyNTQwNzE2fQ.tiNugJY8MVt_ewi28uQ1iF-3zuv0LVra3lLBofJdVlY";
 		db = am.EventRepo;
 		dummyEvent1 = {
 			eid: 1,
@@ -50,7 +52,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			updated_at: "2021-10-21T21:35:07.626Z",
 		};
 
-		createdEvent = {
+		myEvents = {
 			eid: 1,
 			uid: 1,
 			accessrole: "HOST",
@@ -70,7 +72,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			updated_at: "2021-10-21T21:35:07.626Z",
 		};
 
-		attendingEvent = {
+		attendingEvents = {
 			eid: 2,
 			uid: 1,
 			accessrole: "READ",
@@ -94,11 +96,20 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	afterAll(() => {
 		db = null;
 		dummyEvent1 = null;
-		createdEvent = null;
-		attendingEvent = null;
+		myEvents = null;
+		attendingEvents = null;
 	});
 
 	//------------------------------------------------POST---------------------------------------
+	// it("POST /api/events -> create a new event without valid token", async () => {
+	// 	const TOKEN = "";
+	// 	await request
+	// 		.post("/api/events/")
+	// 		.send({})
+	// 		.expect("Content-Type", /json/)
+	// 		.expect(401);
+	// });
+
 	it("POST /api/events -> create a new event without event name and host name", async () => {
 		// const hostname = faker.company.catchPhrase();
 		// const name = faker.commerce.productName();
@@ -167,6 +178,15 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 
 		repoStub.restore();
 	});
+
+	//------------------------------------------------GET----------------------------------------
+	// it("GET /myevents/:uid -> create a new event without valid token", async () => {
+	// 	const TOKEN = "";
+	// 	await request
+	// 		.get("/api/events/myevents/1")
+	// 		.expect("Content-Type", /json/)
+	// 		.expect(401);
+	// });
 
 	it("GET /api/events -> if list is empty, 404 ", async () => {
 		var repoStub = sinon
@@ -262,7 +282,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		var repoStub = sinon
 			.stub(db, "checkEventbyId")
 			.callsFake(() => Promise.resolve(false));
-		const response = await request
+		await request
 			.delete("/api/events/-1")
 			.expect("Content-Type", /json/)
 			.expect(404);
@@ -277,7 +297,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		var repoStub2 = sinon
 			.stub(db, "deleteUser")
 			.callsFake(() => Promise.resolve(true));
-		const response = await request
+		await request
 			.delete("/api/events/1")
 			.expect("Content-Type", /json/)
 			.expect(200);
