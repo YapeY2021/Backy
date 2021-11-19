@@ -295,8 +295,12 @@ export const sortUnattendedEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
 			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
-
+			const { uid } = req.userInfo;
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
 			const responseData = await sortUnattendedEventService(
+				uid,
 				sort,
 				order,
 				eventRepo

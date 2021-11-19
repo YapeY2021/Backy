@@ -10,7 +10,9 @@ import {
 	getMyEventsController,
 	getUnAttendedEventsController,
 	seeEventParticipantsController,
+	sortAttendedEventController,
 	sortEventController,
+	sortUnattendedEventController,
 	updateEventController,
 } from "../controllers/eventControllers.js";
 import { protect } from "../middlewares/authMiddleware.js";
@@ -36,10 +38,12 @@ class EventRoute {
 				getUnAttendedEventsController(req, res, next, this.eventRepo)
 			);
 
-		this.router.route("/new/sort").get(async (req, res, next) => {
-			console.log(req.userInfo);
-			res.json(1);
-		});
+		this.router
+			.route("/new/sort")
+			.post(
+				protect,
+				async (req, res, next) => sortUnattendedEventController
+			);
 
 		this.router
 			.route("/")
@@ -69,10 +73,11 @@ class EventRoute {
 			.get(async (req, res, next) =>
 				getMyEventsController(req, res, next, this.eventRepo)
 			);
-		this.router.route("/myevents/sort").get(async (req, res, next) => {
-			console.log(req.userInfo);
-			res.json(1);
-		});
+		this.router
+			.route("/myevents/sort")
+			.post(protect, async (req, res, next) =>
+				sortAttendedEventController(req, res, next, this.eventRepo)
+			);
 
 		this.router
 			.route("/attendingevents/:uid")
@@ -82,10 +87,9 @@ class EventRoute {
 
 		this.router
 			.route("/attendingevents/sort")
-			.get(async (req, res, next) => {
-				console.log(req.userInfo);
-				res.json(1);
-			});
+			.post(protect, async (req, res, next) =>
+				sortAttendedEventController(req, res, next, this.eventRepo)
+			);
 
 		this.router
 			.route("/filter")

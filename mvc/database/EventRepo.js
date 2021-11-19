@@ -149,7 +149,7 @@ class EventRepo {
 		return events;
 	}
 
-	async sortUnattendedEvents(sort, order) {
+	async sortUnattendedEvents(uid, sort, order) {
 		const events = await this.dbConnection(tables.EVENTS)
 			.orderBy(sort, order)
 			.where(uid != uid);

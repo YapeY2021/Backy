@@ -213,11 +213,15 @@ export const sortEventService = async (
 };
 
 export const sortUnattendedEventService = async (
+	uid,
 	sort = EVENTSORT.NAME,
 	order = SORTORDER.ASC,
 	eventRepo
 ) => {
-	const responseData = await eventRepo.sortUnattendedEvents(sort, order);
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	const responseData = await eventRepo.sortUnattendedEvents(uid, sort, order);
 
 	if (responseData) {
 		return responseData;
