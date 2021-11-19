@@ -286,6 +286,12 @@ export const sortEventController = asyncHandler(
 			if (!uid) {
 				throw new BadRequestError("User ID Missing");
 			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
+			}
 			const responseData = await sortEventService(
 				uid,
 				sort,
@@ -308,6 +314,12 @@ export const sortUnattendedEventController = asyncHandler(
 			if (!uid) {
 				throw new BadRequestError("User ID Missing");
 			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
+			}
 			const responseData = await sortUnattendedEventService(
 				sort,
 				order,
@@ -328,6 +340,12 @@ export const sortAttendedEventController = asyncHandler(
 			const { uid } = req.userInfo;
 			if (!uid) {
 				throw new BadRequestError("User ID Missing");
+			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
 			}
 			const responseData = await sortAttendedEventService(
 				uid,
@@ -351,6 +369,12 @@ export const sortMyEventsController = asyncHandler(
 			const { uid } = req.userInfo;
 			if (!uid) {
 				throw new BadRequestError("User ID Missing");
+			}
+			if (!sort) {
+				throw new BadRequestError("Sort Missing");
+			}
+			if (!order) {
+				throw new BadRequestError("Order Missing");
 			}
 			const responseData = await sortMyEventsService(
 				uid,

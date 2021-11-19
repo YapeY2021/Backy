@@ -136,26 +136,6 @@ export const getMyEventsService = async (uid, eventRepo) => {
 	}
 };
 
-export const sortMyEventsService = async (
-	sort = EVENTSORT.NAME,
-	order = SORTORDER.ASC,
-	eventRepo
-) => {
-	if (!uid) {
-		throw new BadRequestError("User ID Missing");
-	}
-
-	const responseData = await eventRepo.sortMyEvents(uid, sort, order);
-
-	if (responseData) {
-		return responseData;
-	} else {
-		throw new InternalServerError(
-			"Something went wrong while fetching events."
-		);
-	}
-};
-
 export const getUnAttendedEventsService = async (uid, eventRepo) => {
 	if (!uid) {
 		throw new BadRequestError("User ID Missing");
@@ -212,6 +192,15 @@ export const sortEventService = async (
 	order = SORTORDER.ASC,
 	eventRepo
 ) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
 	const responseData = await eventRepo.sortEvents(uid, sort, order);
 
 	if (responseData) {
@@ -229,6 +218,15 @@ export const sortUnattendedEventService = async (
 	order = SORTORDER.ASC,
 	eventRepo
 ) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
 	const responseData = await eventRepo.sortUnattendedEvents(uid, sort, order);
 
 	if (responseData) {
@@ -246,6 +244,15 @@ export const sortAttendedEventService = async (
 	order = SORTORDER.ASC,
 	eventRepo
 ) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
 	const responseData = await eventRepo.sortAttendedEvents(uid, sort, order);
 
 	if (responseData) {
@@ -256,6 +263,33 @@ export const sortAttendedEventService = async (
 		);
 	}
 };
+
+export const sortMyEventsService = async (
+	sort = EVENTSORT.NAME,
+	order = SORTORDER.ASC,
+	eventRepo
+) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
+
+	const responseData = await eventRepo.sortMyEvents(uid, sort, order);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
 export const seeEventParticipantsService = async (eid, eventRepo) => {
 	if (!eid) {
 		throw new BadRequestError("Event ID Missing");
