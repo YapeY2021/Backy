@@ -168,6 +168,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		repoStub.restore();
 	});
 
+	//------------------------------------------------GET----------------------------------------
 	it("GET /api/events -> if list is empty, 404 ", async () => {
 		var repoStub = sinon
 			.stub(db, "getEvents")
@@ -262,7 +263,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		var repoStub = sinon
 			.stub(db, "checkEventbyId")
 			.callsFake(() => Promise.resolve(false));
-		const response = await request
+		await request
 			.delete("/api/events/-1")
 			.expect("Content-Type", /json/)
 			.expect(404);
