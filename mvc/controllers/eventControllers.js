@@ -15,6 +15,7 @@ import {
 	filterEventsService,
 	sortEventService,
 	sortUnattendedEventService,
+	sortAttendedEventService,
 	getUnAttendedEventsService,
 } from "../services/EventServices.js";
 import {
@@ -296,6 +297,24 @@ export const sortUnattendedEventController = asyncHandler(
 			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
 
 			const responseData = await sortUnattendedEventService(
+				sort,
+				order,
+				eventRepo
+			);
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+export const sortAttendedEventController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { sort = EVENTSORT.NAME, order = SORTORDER.ASC } = req.body;
+
+			const responseData = await sortAttendedEventService(
 				sort,
 				order,
 				eventRepo
