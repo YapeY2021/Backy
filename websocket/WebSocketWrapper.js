@@ -16,8 +16,9 @@ export default async (server, messageRepo) => {
 	//Run when client connects
 	io.on("connection", (socket) => {
 		console.log(`${socket.id} is the name of this socket`);
-		socket.on("joinRoom", ({ username, room }) => {
-			console.log(`${username} has joined the room`);
+		socket.on("joinRoom", (params) => {
+			const { eid: room, uid: username } = JSON.parse(params);
+			console.log(`${username} has joined the room ${room}`);
 			const user = userJoin(socket.id, username, room);
 			socket.join(user.room);
 
@@ -48,7 +49,16 @@ export default async (server, messageRepo) => {
 		//Listen for chatMessage
 		socket.on("chatMessage", (msg) => {
 			const user = getCurrentUser(socket.id);
-			io.to(user.room).emit("message", formatMessage(user.username, msg));
+			const jsonMsg = JSON.parse(msg);
+			console.log("user", formatMessage(user.username, jsonMsg.text));
+			const returnMessage = {
+				eid: user.room,
+				uid: user.username,
+				text: jsonMsg.text,
+				time: "12:00pm",
+			};
+			// io.to(user.room).emit("message", formatMessage(user.username, jsonMsg.text));
+			io.to(user.room).emit("message", returnMessage);
 		});
 
 		// Runs when client disconnects
