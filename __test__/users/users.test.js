@@ -10,7 +10,7 @@ const request = supertest(app);
 
 describe("Tests all CRUD functions for USER Service ", () => {
 	let token =
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjQsImVtYWlsIjoicmFuZG9tMUBwYXRyaW90cy51dHR5bGVyLmVkdSIsImlhdCI6MTYzNDU1NDE0NywiZXhwIjoxNjM0NjQwNTQ3fQ.wOazP2TDUra22uXCehX4ZpwS0nZc6pM5mVm-HuUw0vY";
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjQsImVtYWlsIjoiQ0d1bGdvd3NraUBwYXRyaW90cy51dHR5bGVyLmVkdSIsImlhdCI6MTYzNzM1NjcxNiwiZXhwIjoxNjQyNTQwNzE2fQ.tiNugJY8MVt_ewi28uQ1iF-3zuv0LVra3lLBofJdVlY";
 
 	// ---------------------------------Authetication-------------------------------------------
 	// ----sign up----

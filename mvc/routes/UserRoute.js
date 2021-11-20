@@ -10,6 +10,7 @@ import {
 	resetPasswordController,
 	updateUserController,
 } from "../controllers/userControllers.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 class UserRoute {
 	constructor(userRepo, TokenRedisRepo) {
@@ -50,11 +51,13 @@ class UserRoute {
 				authUserController(req, res, next, this.userRepo)
 		);
 
+		// TODO: don't forget to remove this
 		this.router
 			.route("/")
 			.get(async (req, res, next) =>
 				getUsers(req, res, next, this.userRepo)
 			);
+
 		this.router
 			.route("/:uid")
 			.get(async (req, res, next) =>
@@ -63,18 +66,19 @@ class UserRoute {
 
 		this.router
 			.route("/:uid/")
-			.put(async (req, res, next) =>
+			.put(protect, async (req, res, next) =>
 				updateUserController(req, res, next, this.userRepo)
 			);
+
 		this.router
 			.route("/:uid")
-			.delete(async (req, res, next) =>
+			.delete(protect, async (req, res, next) =>
 				deleteUser(req, res, next, this.userRepo)
 			);
 
 		this.router
 			.route("/reset-password/:token")
-			.post(async (req, res, next) =>
+			.post(protect, async (req, res, next) =>
 				resetPasswordController(
 					req,
 					res,
@@ -83,9 +87,10 @@ class UserRoute {
 					this.tokenRedisRepo
 				)
 			);
+
 		this.router
 			.route("/forgot-password")
-			.post(async (req, res, next) =>
+			.post(protect, async (req, res, next) =>
 				forgotPasswordController(
 					req,
 					res,
@@ -97,7 +102,7 @@ class UserRoute {
 
 		this.router
 			.route("/:uid/image/dummy")
-			.get(async (req, res) => res.render("upload_image"));
+			.get(protect, async (req, res) => res.render("upload_image"));
 
 		return this.router;
 	}

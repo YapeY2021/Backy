@@ -101,14 +101,15 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	});
 
 	//------------------------------------------------POST---------------------------------------
-	// it("POST /api/events -> create a new event without valid token", async () => {
-	// 	const TOKEN = "";
-	// 	await request
-	// 		.post("/api/events/")
-	// 		.send({})
-	// 		.expect("Content-Type", /json/)
-	// 		.expect(401);
-	// });
+	it("POST /api/events -> create a new event without valid token", async () => {
+		const TOKEN = "";
+		await request
+			.post("/api/events/")
+			.send({})
+			.expect("Content-Type", /json/)
+			.set("Authorization", `Bearer ${TOKEN}`)
+			.expect(401);
+	});
 
 	it("POST /api/events -> create a new event without event name and host name", async () => {
 		// const hostname = faker.company.catchPhrase();
@@ -117,6 +118,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.post("/api/events/")
 			.send({})
 			.expect("Content-Type", /json/)
+			.set("Authorization", `Bearer ${TOKEN}`)
 			.expect(400);
 	});
 
@@ -127,6 +129,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.post("/api/events/")
 			.send({ name })
 			.expect("Content-Type", /json/)
+			.set("Authorization", `Bearer ${TOKEN}`)
 			.expect(400);
 	});
 
@@ -137,6 +140,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.post("/api/events/")
 			.send({ hostname })
 			.expect("Content-Type", /json/)
+			.set("Authorization", `Bearer ${TOKEN}`)
 			.expect(400);
 	});
 
@@ -149,6 +153,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		const response = await request
 			.post("/api/events/")
 			.send({ hostname, name })
+			.set("Authorization", `Bearer ${TOKEN}`)
 			.expect("Content-Type", /json/)
 			.expect(500);
 
@@ -164,6 +169,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		const response = await request
 			.post("/api/events/")
 			.send({ hostname, name })
+			.set("Authorization", `Bearer ${TOKEN}`)
 			.expect("Content-Type", /json/)
 			.expect(200);
 		if (response.body && response.body.length > 0) {
@@ -180,13 +186,14 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	});
 
 	//------------------------------------------------GET----------------------------------------
-	// it("GET /myevents/:uid -> create a new event without valid token", async () => {
-	// 	const TOKEN = "";
-	// 	await request
-	// 		.get("/api/events/myevents/1")
-	// 		.expect("Content-Type", /json/)
-	// 		.expect(401);
-	// });
+	it("GET /new/:uid -> get new events without valid token", async () => {
+		const TOKEN = "";
+		await request
+			.get("/api/events/new/1")
+			.set("Authorization", `Bearer ${TOKEN}`)
+			.expect("Content-Type", /json/)
+			.expect(401);
+	});
 
 	it("GET /api/events -> if list is empty, 404 ", async () => {
 		var repoStub = sinon
