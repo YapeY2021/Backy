@@ -12,11 +12,12 @@ export default async (server, messageRepo) => {
 		cors: { origin: "*", methods: ["GET", "POST"] },
 	});
 
-	const botName = "Event Bot";
+	const botName = "Humane Bot";
 	//Run when client connects
 	io.on("connection", (socket) => {
-		console.log("hello-world");
+		console.log(`${socket.id} is the name of this socket`);
 		socket.on("joinRoom", ({ username, room }) => {
+			console.log(`${username} has joined the room`);
 			const user = userJoin(socket.id, username, room);
 			socket.join(user.room);
 
@@ -52,6 +53,8 @@ export default async (server, messageRepo) => {
 
 		// Runs when client disconnects
 		socket.on("disconnect", () => {
+			socket.disconnect();
+			console.log(`${socket.id} had left the chat`);
 			const user = userLeave(socket.id);
 			if (user) {
 				io.to(user.room).emit(
