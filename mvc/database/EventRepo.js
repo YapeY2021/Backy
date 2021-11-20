@@ -25,22 +25,51 @@ class EventRepo {
 
 	// gets required event from the db using eid
 	async getEventbyId(eid) {
+		// const event = await this.dbConnection.raw(
+		// 	`SELECT * FROM ${tables.EVENTS} WHERE eid = ${eid} LIMIT)`
+		// );
+		// const event = await this.dbConnection(tables.EVENTS)
+		// 	.where({ eid: eid })
+		// 	.first();
+
 		const event = await this.dbConnection(tables.EVENTS)
-			.where({ eid: eid })
-			.first();
+			.select(
+				`*`,
+				this.dbConnection(tables.PARTICIPANTS)
+					.count("*")
+					.whereRaw("?? = ??", [
+						`${tables.EVENTS}.eid`,
+						`${tables.PARTICIPANTS}.eid`,
+					])
+					.as("participants")
+			)
+			.where({ eid: eid });
 		return event;
 	}
 
 	// gets events from the db
 	async getEvents() {
-		const event = await this.dbConnection(tables.EVENTS).select();
+		const event = await this.dbConnection(tables.EVENTS).select(
+			`*`,
+			this.dbConnection(tables.PARTICIPANTS)
+				.count("*")
+				.whereRaw("?? = ??", [
+					`${tables.EVENTS}.eid`,
+					`${tables.PARTICIPANTS}.eid`,
+				])
+				.as("participants")
+		);
 		return event;
 	}
 
 	// gets unattended events by the user
 	async getUnAttendedEvents(uid) {
+		// const events = await this.dbConnection.raw(
+		// 	`SELECT * FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
+		// );
+
 		const events = await this.dbConnection.raw(
-			`SELECT * FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
+			`SELECT *,(SELECT COUNT(*) from ${tables.PARTICIPANTS} where ${tables.PARTICIPANTS}.eid=${tables.EVENTS}.eid) as participants FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
 		);
 
 		if (events.rows) {
@@ -115,7 +144,16 @@ class EventRepo {
 				`${tables.EVENTS}.eid`,
 				`${tables.PARTICIPANTS}.eid`
 			)
-			.select()
+			.select(
+				`*`,
+				this.dbConnection(tables.PARTICIPANTS)
+					.count("*")
+					.whereRaw("?? = ??", [
+						`${tables.EVENTS}.eid`,
+						`${tables.PARTICIPANTS}.eid`,
+					])
+					.as("participants")
+			)
 			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
 		return events;
 	}
@@ -128,7 +166,16 @@ class EventRepo {
 				`${tables.EVENTS}.eid`,
 				`${tables.PARTICIPANTS}.eid`
 			)
-			.select()
+			.select(
+				`*`,
+				this.dbConnection(tables.PARTICIPANTS)
+					.count("*")
+					.whereRaw("?? = ??", [
+						`${tables.EVENTS}.eid`,
+						`${tables.PARTICIPANTS}.eid`,
+					])
+					.as("participants")
+			)
 
 			.where({ uid: uid, accessrole: EventAccessRoles.READ });
 		return events;
