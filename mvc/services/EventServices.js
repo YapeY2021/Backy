@@ -140,7 +140,7 @@ export const getUnAttendedEventsService = async (uid, eventRepo) => {
 	if (!uid) {
 		throw new BadRequestError("User ID Missing");
 	}
-
+	console.log(uid);
 	const responseData = await eventRepo.getUnAttendedEvents(uid);
 
 	if (responseData) {

@@ -33,6 +33,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			cid: null,
 			created_at: "2021-10-21T21:35:07.626Z",
 			updated_at: "2021-10-21T21:35:07.626Z",
+			participants: "1",
 		};
 		dummyEvent2 = {
 			eid: 2,
@@ -135,7 +136,6 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 
 	it("POST /api/events -> create a new event without event name -400", async () => {
 		const hostname = faker.company.catchPhrase();
-		// const name = faker.commerce.productName();
 		const response = await request
 			.post("/api/events/")
 			.send({ hostname })
@@ -178,6 +178,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 					name: expect.any(String),
 					hostname: expect.any(String),
 					eid: expect.any(Number),
+					participants: expect.any(String),
 				})
 			);
 		}
@@ -221,6 +222,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 					name: expect.any(String),
 					hostname: expect.any(String),
 					eid: expect.any(Number),
+					participants: expect.any(String),
 				})
 			);
 		}

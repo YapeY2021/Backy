@@ -48,9 +48,15 @@ class EventRoute {
 
 		this.router
 			.route("/myevents/:uid")
-			.get(protect, async (req, res, next) => {
-				getMyEventsController(req, res, next, this.eventRepo);
-			});
+			.get(protect, async (req, res, next) =>
+				getMyEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/attendingevents/:uid")
+			.get(async (req, res, next) =>
+				getAttendingEventsController(req, res, next, this.eventRepo)
+			);
 
 		this.router
 			.route("/:eid/image/dummy")
@@ -66,12 +72,6 @@ class EventRoute {
 			const eid = req.params.eid;
 			getChatsController(req, res, next, this.eventRepo);
 		});
-
-		this.router
-			.route("/attendingevents/:uid")
-			.get(async (req, res, next) =>
-				getAttendingEventsController(req, res, next, this.eventRepo)
-			);
 
 		//-----------------------------POST--------------------------//
 		this.router
