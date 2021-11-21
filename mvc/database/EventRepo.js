@@ -129,13 +129,43 @@ class EventRepo {
 				`${tables.PARTICIPANTS}.eid`
 			)
 			.select()
-
 			.where({ uid: uid, accessrole: EventAccessRoles.READ });
 		return events;
 	}
 
-	async filterEvents(value) {
+	async filterUnAttendedEvents(value, uid) {
 		const events = await this.dbConnection(tables.EVENTS)
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`)
+			.whereNot({ uid: uid });
+		return events;
+	}
+
+	async filterAttendingEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.READ })
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`);
+		return events;
+	}
+
+	async filterMyEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.READ })
 			.where("name", "like", `%${value}%`)
 			.orWhere("location", "like", `%${value}%`)
 			.orWhere("hostname", "like", `%${value}%`);

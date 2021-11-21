@@ -2,6 +2,7 @@ import express from "express";
 import {
 	createEventController,
 	deleteEventController,
+	filterAttendingEventsController,
 	filterEventsController,
 	getAttendingEventsController,
 	getChatsController,
@@ -12,7 +13,6 @@ import {
 	seeEventParticipantsController,
 	sortAttendedEventController,
 	sortEventController,
-	sortMyEventsController,
 	sortUnattendedEventController,
 	updateEventController,
 } from "../controllers/eventControllers.js";
@@ -80,12 +80,17 @@ class EventRoute {
 			);
 
 		this.router
+			.route("/myevents/filter")
+			.post(async (req, res, next) =>
+				filterEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
 			.route("/attendingevents/:uid")
 			.get(async (req, res, next) =>
 				getAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
-		// attending sort
 		this.router
 			.route("/attendingevents/sort")
 			.post(protect, async (req, res, next) =>
@@ -93,9 +98,9 @@ class EventRoute {
 			);
 
 		this.router
-			.route("/filter")
+			.route("/attendingevents/filter")
 			.post(async (req, res, next) =>
-				filterEventsController(req, res, next, this.eventRepo)
+				filterAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
 		this.router
