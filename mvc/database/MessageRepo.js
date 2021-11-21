@@ -12,10 +12,10 @@ class MessageRepo {
 		return newChat[0];
 	}
 	async getlast30messages(eid) {
-		const lastChats = await this.dbConnection.raw(
+		const response = await this.dbConnection.raw(
 			`SELECT * FROM ${tables.MESSAGE} WHERE eid=${eid} LIMIT 30`
 		);
-		return lastChats;
+		return response.rows;
 	}
 }
 
