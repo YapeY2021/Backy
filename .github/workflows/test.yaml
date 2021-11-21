@@ -2,16 +2,13 @@ name: Node.js
 
 on:
     push:
-        branches: [main, master]
+        branches: [main, master, event_refactor]
     pull_request:
-        branches: [main, master]
+        branches: [main, master, event_refactor]
 
 jobs:
     build:
         runs-on: ubuntu-latest
-
-        node-version: [16.x]
-
         env:
             JWT_SECRET: ${{secrets.JWT_SECRET}}
             NODE_ENV: ${{secrets.JWT_SECRET}}
@@ -20,13 +17,15 @@ jobs:
             EMAIL_USERNAME: ${{secrets.JWT_SECRET}}
             EMAIL_PASSWORD: ${{secrets.JWT_SECRET}}
             FROM_EMAIL: ${{secrets.JWT_SECRET}}
-
+        strategy:
+            matrix:
+                node-version: [15.x]
         steps:
             - uses: actions/checkout@v2
-            - name: Use Node.js
+            - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2
               with:
-                  node-version: 16.x
+                  node-version: ${{ matrix.node-version }}
             - name: Install node packages
             - run: npm install
             - name: Install dependencies
