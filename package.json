@@ -4,10 +4,6 @@
 	"description": "",
 	"main": "index.js",
 	"type": "module",
-	"engines": {
-		"node": "15.0.1",
-		"npm": "7.24.0"
-	},
 	"scripts": {
 		"start": "node index.js",
 		"watch": "nodemon index.js",
