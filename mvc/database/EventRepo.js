@@ -25,26 +25,13 @@ class EventRepo {
 
 	// gets required event from the db using eid
 	async getEventbyId(eid) {
-		// const event = await this.dbConnection.raw(
-		// 	`SELECT * FROM ${tables.EVENTS} WHERE eid = ${eid} LIMIT)`
-		// );
-		// const event = await this.dbConnection(tables.EVENTS)
-		// 	.where({ eid: eid })
-		// 	.first();
-
-		const event = await this.dbConnection(tables.EVENTS)
-			.select(
-				`*`,
-				this.dbConnection(tables.PARTICIPANTS)
-					.count("*")
-					.whereRaw("?? = ??", [
-						`${tables.EVENTS}.eid`,
-						`${tables.PARTICIPANTS}.eid`,
-					])
-					.as("participants")
-			)
+		let event = await this.dbConnection(tables.EVENTS)
+			.first()
 			.where({ eid: eid });
-		return event;
+		console.log(event);
+		const p_list = await this.seeEventParticipants(eid);
+		let res = { ...event, p_list };
+		return res;
 	}
 
 	// gets events from the db

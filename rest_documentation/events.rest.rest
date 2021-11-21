@@ -40,22 +40,23 @@
 # Uncomment line below
 # GET http://localhost:5002/api/events
 
+
+# fetch a single event by id 
+# Endpoint format: base_url/api/events/:eid/
+# Uncomment line below
+GET http://localhost:5002/api/events/1
+
+# fetches participants of the event
+# Endpoint format: base_url/api/events/:eid/participants
+# Uncomment line below
+# GET http://localhost:5002/api/events/1/participants
+
 # fetches all the events from the backend unattended by user
 # Endpoint format: base_url/api/events/new/:uid
 
 # Uncomment line below
 # GET http://localhost:5002/api/events/new/1 HTTP/1.1
 
-
-# fetch a single event by id 
-# Endpoint format: base_url/api/events/:eid/
-# Uncomment line below
-# GET http://localhost:5002/api/events/1
-
-# fetches participants of the event
-# Endpoint format: base_url/api/events/:eid/participants
-# Uncomment line below
-# GET http://localhost:5002/api/events/1/participants
 
 
 # fetches chat of the event
