@@ -13,7 +13,7 @@ class MessageRepo {
 	}
 	async getlast30messages(eid) {
 		const response = await this.dbConnection.raw(
-			`SELECT * FROM ${tables.MESSAGE} WHERE eid=${eid} LIMIT 30`
+			`SELECT * FROM ${tables.MESSAGE} WHERE eid=${eid} LIMIT 30 ORDER BY created_at ASC;`
 		);
 		return response.rows;
 	}
