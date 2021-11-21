@@ -17,9 +17,9 @@ export default async (server, messageRepo) => {
 	io.on("connection", (socket) => {
 		console.log(`${socket.id} is the name of this socket`);
 		socket.on("joinRoom", (params) => {
-			const { eid: room, uid: username } = JSON.parse(params);
+			const { eid: room, uid: username, name: name } = JSON.parse(params);
 			console.log(`${username} has joined the room ${room}`);
-			const user = userJoin(socket.id, username, room);
+			const user = userJoin(socket.id, username, room, name);
 			socket.join(user.room);
 
 			// Welcome current user
@@ -64,7 +64,7 @@ export default async (server, messageRepo) => {
 			// io.to(user.room).emit("message", formatMessage(user.username, jsonMsg.text));
 			io.to(user.room).emit(
 				"message",
-				formatMessage(user.username, user.room, jsonMsg.text)
+				formatMessage(user.username, user.room, jsonMsg.text, user.name)
 			);
 		});
 
