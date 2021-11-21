@@ -16,10 +16,11 @@ export default async (server, messageRepo, userRepo) => {
 	//Run when client connects
 	io.on("connection", (socket) => {
 		console.log(`${socket.id} is the name of this socket`);
-		socket.on("joinRoom", (params) => {
+		socket.on("joinRoom", async (params) => {
+			console.log("params", JSON.parse(params));
 			const { eid, uid } = JSON.parse(params);
-			const name = userRepo.getUserById(uid);
-			console.log(`${name} has joined the room ${eid}`);
+			const [{ firstname }] = await userRepo.getUserById(uid);
+			console.log(`${firstname} and ${uid} has joined the room ${eid}`);
 			const user = userJoin(socket.id, uid, eid);
 			socket.join(user.room);
 
