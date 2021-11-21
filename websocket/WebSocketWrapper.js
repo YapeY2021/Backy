@@ -50,24 +50,25 @@ export default async (server, messageRepo, userRepo) => {
 		});
 
 		//Listen for chatMessage
-		socket.on("chatMessage", (msg) => {
+		socket.on("chatMessage", async (msg) => {
 			const user = getCurrentUser(socket.id);
 			const jsonMsg = JSON.parse(msg);
 			console.log(
 				"user",
 				formatMessage(user.username, user.room, jsonMsg.text, "")
 			);
-			const returnMessage = {
-				eid: user.room,
-				uid: user.username,
-				text: jsonMsg.text,
-				time: "12:00pm",
+			const [{ firstname }] = await userRepo.getUserById(uid);
+			let newMessage = await messageRepo.addMessage(
+				user.room,
+				user.username,
+				jsonMsg.text
+			);
+			newMessage = {
+				...newMessage,
+				firstname,
 			};
 			// io.to(user.room).emit("message", formatMessage(user.username, jsonMsg.text));
-			io.to(user.room).emit(
-				"message",
-				formatMessage(user.username, user.room, jsonMsg.text, user.name)
-			);
+			io.to(user.room).emit("message", newMessage);
 		});
 
 		// Runs when client disconnects
