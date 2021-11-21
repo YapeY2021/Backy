@@ -17,6 +17,8 @@ import {
 	sortMyEventsService,
 	getUnAttendedEventsService,
 	filterMyEventsService,
+	filterAttendingEventsService,
+	filterUnAttendedEventsService,
 } from "../services/EventServices.js";
 import { BadRequestError } from "../../utilities/types/Errors.js";
 import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
@@ -24,8 +26,6 @@ import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
 import { EVENTSORT, SORTORDER } from "../../utilities/types/ENUMS.js";
 import { tables } from "../../utilities/types/Tables.js";
 import { uploadUserImageFirebaseService } from "../services/UserServices.js";
-import { filterAttendingEventsService } from "mvc/services/EventServices";
-
 export const createEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
@@ -258,11 +258,15 @@ export const getAttendingEventsController = asyncHandler(
 export const filterAttendingEventsController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
-			const { value } = req.body;
+			const { value, uid } = req.body;
 			if (!value) {
 				throw new BadRequestError(
 					"No value provided to filter events."
 				);
+			}
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
 			}
 
 			const responseData = await filterAttendingEventsService(
@@ -278,14 +282,46 @@ export const filterAttendingEventsController = asyncHandler(
 	}
 );
 
-export const filterMyEventsController = asyncHandler(
+// returns filtered list of events
+export const filterUnAttendedEventsController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
-			const { value } = req.body;
+			const { value, uid } = req.body;
 			if (!value) {
 				throw new BadRequestError(
 					"No value provided to filter events."
 				);
+			}
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
+			}
+
+			const responseData = await filterUnAttendedEventsService(
+				value,
+				uid,
+				eventRepo
+			);
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+export const filterMyEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { value, uid } = req.body;
+			if (!value) {
+				throw new BadRequestError(
+					"No value provided to filter events."
+				);
+			}
+
+			if (!uid) {
+				throw new BadRequestError("User ID Missing");
 			}
 
 			const responseData = await filterMyEventsService(
