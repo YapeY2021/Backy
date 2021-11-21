@@ -24,17 +24,18 @@ export default async (server, messageRepo) => {
 
 			// Welcome current user
 			socket.emit(
-				"message",
-				formatMessage(botName, "Welcome to Chatcord")
+				"inout",
+				formatMessage(botName, user.room, "Welcome to Chatcord")
 			);
 
 			// Broadcasts when user connects
 			socket.broadcast
 				.to(user.room)
 				.emit(
-					"message",
+					"inout",
 					formatMessage(
 						botName,
+						user.room,
 						`${user.username} has joined the chat`
 					)
 				);
@@ -50,7 +51,10 @@ export default async (server, messageRepo) => {
 		socket.on("chatMessage", (msg) => {
 			const user = getCurrentUser(socket.id);
 			const jsonMsg = JSON.parse(msg);
-			console.log("user", formatMessage(user.username, jsonMsg.text));
+			console.log(
+				"user",
+				formatMessage(user.username, user.room, jsonMsg.text)
+			);
 			const returnMessage = {
 				eid: user.room,
 				uid: user.username,
@@ -58,7 +62,10 @@ export default async (server, messageRepo) => {
 				time: "12:00pm",
 			};
 			// io.to(user.room).emit("message", formatMessage(user.username, jsonMsg.text));
-			io.to(user.room).emit("message", returnMessage);
+			io.to(user.room).emit(
+				"message",
+				formatMessage(user.username, user.room, jsonMsg.text)
+			);
 		});
 
 		// Runs when client disconnects
@@ -68,8 +75,12 @@ export default async (server, messageRepo) => {
 			const user = userLeave(socket.id);
 			if (user) {
 				io.to(user.room).emit(
-					"message",
-					formatMessage(botName, `${user.username} has left the chat`)
+					"inout",
+					formatMessage(
+						botName,
+						user.room,
+						`${user.username} has left the chat`
+					)
 				);
 
 				io.to(user.room).emit("roomUsers", {
