@@ -7,7 +7,7 @@ import {
 	getRoomUsers,
 } from "./utils/users.js";
 
-export default async (server, messageRepo) => {
+export default async (server, messageRepo, userRepo) => {
 	const io = new Server(server, {
 		cors: { origin: "*", methods: ["GET", "POST"] },
 	});
@@ -17,34 +17,35 @@ export default async (server, messageRepo) => {
 	io.on("connection", (socket) => {
 		console.log(`${socket.id} is the name of this socket`);
 		socket.on("joinRoom", (params) => {
-			const { eid: room, uid: username, name: name } = JSON.parse(params);
-			console.log(`${username} has joined the room ${room}`);
-			const user = userJoin(socket.id, username, room, name);
+			const { eid, uid } = JSON.parse(params);
+			const name = userRepo.getUserById(uid);
+			console.log(`${name} has joined the room ${eid}`);
+			const user = userJoin(socket.id, uid, eid);
 			socket.join(user.room);
 
 			// Welcome current user
-			socket.emit(
-				"inout",
-				formatMessage(botName, user.room, "Welcome to Chatcord")
-			);
+			// socket.emit(
+			// 	"inout",
+			// 	formatMessage(botName, user.room, "Welcome to Chatcord")
+			// );
 
 			// Broadcasts when user connects
-			socket.broadcast
-				.to(user.room)
-				.emit(
-					"inout",
-					formatMessage(
-						botName,
-						user.room,
-						`${user.username} has joined the chat`
-					)
-				);
+			// socket.broadcast
+			// 	.to(user.room)
+			// 	.emit(
+			// 		"inout",
+			// 		formatMessage(
+			// 			botName,
+			// 			user.room,
+			// 			`${user.username} has joined the chat`
+			// 		)
+			// 	);
 
 			// Send user and room info
-			io.to(user.room).emit("roomUsers", {
-				room: user.room,
-				users: getRoomUsers(user.room),
-			});
+			// io.to(user.room).emit("roomUsers", {
+			// 	room: user.room,
+			// 	users: getRoomUsers(user.room),
+			// });
 		});
 
 		//Listen for chatMessage
@@ -53,7 +54,7 @@ export default async (server, messageRepo) => {
 			const jsonMsg = JSON.parse(msg);
 			console.log(
 				"user",
-				formatMessage(user.username, user.room, jsonMsg.text)
+				formatMessage(user.username, user.room, jsonMsg.text, "")
 			);
 			const returnMessage = {
 				eid: user.room,
