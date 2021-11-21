@@ -21,7 +21,7 @@ jobs:
               env:
                   CI: true
                   JWT_SECRET: ${{secrets.JWT_SECRET}}
-                  NODE_ENV: ${{secrets.JWT_SECRET}}
+                  NODE_ENV: "test"
                   PORT: ${{secrets.JWT_SECRET}}
                   EMAIL_HOST: ${{secrets.JWT_SECRET}}
                   EMAIL_USERNAME: ${{secrets.JWT_SECRET}}
