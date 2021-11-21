@@ -1,4 +1,3 @@
-import express from "express";
 import asyncHandler from "express-async-handler";
 import {
 	getEventByIdService,
@@ -12,22 +11,20 @@ import {
 	uploadEventImageFirebaseService,
 	getMyEventsService,
 	getAttendingEventsService,
-	filterEventsService,
 	sortEventService,
 	sortUnattendedEventService,
 	sortAttendedEventService,
 	sortMyEventsService,
 	getUnAttendedEventsService,
+	filterMyEventsService,
 } from "../services/EventServices.js";
-import {
-	BadRequestError,
-	NotAuthorizedError,
-} from "../../utilities/types/Errors.js";
+import { BadRequestError } from "../../utilities/types/Errors.js";
 import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 import ReqBodyPolisher from "../../utilities/ReqBodyPolisher.js";
 import { EVENTSORT, SORTORDER } from "../../utilities/types/ENUMS.js";
 import { tables } from "../../utilities/types/Tables.js";
 import { uploadUserImageFirebaseService } from "../services/UserServices.js";
+import { filterAttendingEventsService } from "mvc/services/EventServices";
 
 export const createEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
@@ -258,7 +255,7 @@ export const getAttendingEventsController = asyncHandler(
 );
 
 // returns filtered list of events
-export const filterEventsController = asyncHandler(
+export const filterAttendingEventsController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
 			const { value } = req.body;
@@ -268,7 +265,34 @@ export const filterEventsController = asyncHandler(
 				);
 			}
 
-			const responseData = await filterEventsService(value, eventRepo);
+			const responseData = await filterAttendingEventsService(
+				value,
+				uid,
+				eventRepo
+			);
+			res.status(200).json(responseData);
+			return "";
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+export const filterMyEventsController = asyncHandler(
+	async (req, res, next, eventRepo) => {
+		try {
+			const { value } = req.body;
+			if (!value) {
+				throw new BadRequestError(
+					"No value provided to filter events."
+				);
+			}
+
+			const responseData = await filterMyEventsService(
+				value,
+				uid,
+				eventRepo
+			);
 			res.status(200).json(responseData);
 			return "";
 		} catch (e) {

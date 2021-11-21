@@ -168,13 +168,28 @@ export const getAttendingEventsService = async (uid, eventRepo) => {
 	}
 };
 
-// filters events based on the value provided by the user
-export const filterEventsService = async (value, eventRepo) => {
+export const filterAttendingEventsService = async (value, uid, eventRepo) => {
 	if (!value) {
 		throw new BadRequestError("No value provided to filter events.");
 	}
 
-	const responseData = await eventRepo.filterEvents(value);
+	const responseData = await eventRepo.filterAttendingEvents(value, uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const filterMyEventsService = async (value, uid, eventRepo) => {
+	if (!value) {
+		throw new BadRequestError("No value provided to filter events.");
+	}
+
+	const responseData = await eventRepo.filterAttendingEvents(value, uid);
 
 	if (responseData) {
 		return responseData;
