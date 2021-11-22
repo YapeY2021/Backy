@@ -166,7 +166,7 @@ export const jointEventController = asyncHandler(
 				eventRepo
 			);
 
-			res.status(201).json(responseData);
+			res.status(200).json(responseData);
 		} catch (e) {
 			next(e);
 		}

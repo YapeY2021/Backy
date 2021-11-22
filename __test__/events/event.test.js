@@ -175,8 +175,70 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 				})
 			);
 		}
-
 		repoStub.restore();
+	});
+
+	//----------------------join event feature-----------------------------
+	it("POST /api/events/:uid/join -> join event with no eid", async () => {
+		const eid = 1;
+		const uid = 1;
+		await request
+			.post(`/api/events/${eid}/join`)
+			.send({ uid })
+			.expect("Content-Type", /json/)
+			.expect(400);
+	});
+
+	it("POST /api/events/:uid/join -> join event with no uid", async () => {
+		const eid = 1;
+		await request
+			.post(`/api/events/${eid}/join`)
+			.send({ eid })
+			.expect("Content-Type", /json/)
+			.expect(400);
+	});
+
+	it("POST /api/events/:uid/join -> join event with no uid and eid", async () => {
+		const eid = 1;
+		const uid = 1;
+		await request
+			.post(`/api/events/${eid}/join`)
+			.send({})
+			.expect("Content-Type", /json/)
+			.expect(400);
+	});
+
+	it("POST /api/events/:uid/join -> already joined event", async () => {
+		const eid = 1;
+		const uid = 1;
+		var repoStub = sinon
+			.stub(db, "checkEventParticipant")
+			.callsFake(() => Promise.resolve(true));
+		await request
+			.post(`/api/events/${eid}/join`)
+			.send({ uid, eid })
+			.expect("Content-Type", /json/)
+			.expect(400);
+		repoStub.restore();
+	});
+
+	it("POST /api/events/:uid/join -> join new valid email", async () => {
+		const eid = 1;
+		const uid = 1;
+		var repoStub1 = sinon
+			.stub(db, "checkEventParticipant")
+			.callsFake(() => Promise.resolve(false));
+		var repoStub2 = sinon
+			.stub(db, "joinEvent")
+			.callsFake(() => Promise.resolve({ a: 1 }));
+		await request
+			.post(`/api/events/${eid}/join`)
+			.send({ eid, uid })
+			.expect("Content-Type", /json/)
+			.expect(200);
+
+		repoStub1.restore();
+		repoStub2.restore();
 	});
 
 	//------------------------------------------------GET----------------------------------------

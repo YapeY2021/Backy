@@ -85,10 +85,13 @@ class EventRepo {
 
 	// adds user to the event participants table
 	async joinEvent(uid, eid, accessRole) {
-		const event = await this.dbConnection(tables.PARTICIPANTS)
+		const events = await this.dbConnection(tables.PARTICIPANTS)
 			.insert({ eid: eid, uid: uid, accessrole: accessRole })
 			.returning("*");
-		return event;
+		if (events.length > 0) {
+			return events[0];
+		}
+		return null;
 	}
 
 	// fetches all the event participants
