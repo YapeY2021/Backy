@@ -120,7 +120,6 @@ export const jointEventService = async (uid, eid, accessRole, eventRepo) => {
 	}
 
 	const responseData = await eventRepo.joinEvent(uid, eid, accessRole);
-
 	if (responseData) {
 		return responseData;
 	} else {
