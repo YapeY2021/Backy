@@ -75,9 +75,9 @@ class EventRepo {
 	}
 
 	// determines whether user has already joined the event or not
-	async checkEventParticipant(uid) {
+	async checkEventParticipant(uid, eid) {
 		const events = await this.dbConnection(tables.PARTICIPANTS)
-			.where({ uid: uid })
+			.where({ uid: uid, eid: eid })
 			.select();
 		return events.length > 0;
 	}
@@ -87,7 +87,10 @@ class EventRepo {
 		const event = await this.dbConnection(tables.PARTICIPANTS)
 			.insert({ eid: eid, uid: uid, accessrole: accessRole })
 			.returning("*");
-		return event;
+		if (event.length > 0) {
+			return event[0];
+		}
+		return null;
 	}
 
 	// fetches all the event participants

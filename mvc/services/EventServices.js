@@ -113,7 +113,7 @@ export const jointEventService = async (uid, eid, accessRole, eventRepo) => {
 		throw new BadRequestError("Event ID Missing");
 	}
 
-	const participantExists = await eventRepo.checkEventParticipant(uid);
+	const participantExists = await eventRepo.checkEventParticipant(uid, eid);
 
 	if (participantExists) {
 		throw new BadRequestError("Already joined the event");

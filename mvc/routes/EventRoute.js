@@ -11,6 +11,7 @@ import {
 	getEventsController,
 	getMyEventsController,
 	getUnAttendedEventsController,
+	jointEventController,
 	seeEventParticipantsController,
 	sortAttendedEventController,
 	sortEventController,
@@ -119,7 +120,7 @@ class EventRoute {
 		this.router
 			.route("/:eid/join")
 			.post(async (req, res, next) =>
-				getAttendingEventsController(req, res, next, this.eventRepo)
+				jointEventController(req, res, next, this.eventRepo)
 			);
 
 		this.router
