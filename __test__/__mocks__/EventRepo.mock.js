@@ -3,8 +3,6 @@ class EventRepoMock {
 
 	async getEvents() {}
 
-	async createEvent(eventInfo) {}
-
 	async getMyEvents(uid) {}
 
 	async getAttendingEvents(uid) {}

@@ -18,7 +18,6 @@ export const createEventService = async (eventInfo, eventRepo) => {
 	if (!eventInfo.hostname) {
 		throw new BadRequestError("Host name missing");
 	}
-
 	const createdEvent = await eventRepo.createEvent(eventInfo);
 
 	if (createdEvent) {

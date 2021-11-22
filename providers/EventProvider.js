@@ -4,12 +4,13 @@ import EventRoute from "../mvc/routes/EventRoute.js";
 
 export default function (container) {
 	container.service("EventRepo", (container) => {
-		const environment = process.env.NODE_ENV;
-		if (environment == "test") {
-			return new EventRepoMock();
-		} else {
-			return new EventRepo(container.Database);
-		}
+		// const environment = process.env.NODE_ENV;
+		// if (environment == "test") {
+		// 	return new EventRepoMock();
+		// } else {
+		// 	return new EventRepo(container.Database);
+		// }
+		return new EventRepo(container.Database);
 	});
 	container.service("EventRoute", (container) =>
 		new EventRoute(container.EventRepo).createEventRoutes()
