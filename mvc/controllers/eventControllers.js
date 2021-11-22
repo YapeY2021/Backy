@@ -295,15 +295,14 @@ export const filterUnAttendedEventsController = asyncHandler(
 			if (!uid) {
 				throw new BadRequestError("User ID Missing");
 			}
-
 			const responseData = await filterUnAttendedEventsService(
 				value,
 				uid,
 				eventRepo
 			);
 			res.status(200).json(responseData);
-			return "";
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
