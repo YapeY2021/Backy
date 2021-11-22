@@ -5,9 +5,9 @@ class MessageRepo {
 		this.dbConnection = dbConnection;
 	}
 	// create chat object in the chats relation
-	async addMessage(eid, uid, text) {
+	async addMessage(eid, uid, text, firstname) {
 		const newChat = await this.dbConnection(tables.MESSAGE)
-			.insert({ eid, uid, text })
+			.insert({ eid, uid, text, firstname })
 			.returning("*");
 		return newChat[0];
 	}

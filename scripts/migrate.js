@@ -84,6 +84,7 @@ export const Migrate = async (dbConnection) => {
 					.onDelete("CASCADE");
 				table.integer("uid");
 				table.string("text", 100);
+				table.string("firstname", 100);
 				table.timestamps(true, true);
 			});
 		console.log(`Created ${tables.MESSAGE} relation.`);

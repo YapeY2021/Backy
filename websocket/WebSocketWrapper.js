@@ -21,7 +21,7 @@ export default async (server, messageRepo, userRepo) => {
 			const { eid, uid } = JSON.parse(params);
 			const [{ firstname }] = await userRepo.getUserById(uid);
 			console.log(`${firstname} and ${uid} has joined the room ${eid}`);
-			const user = userJoin(socket.id, uid, eid);
+			const user = userJoin(socket.id, uid, eid, name);
 			socket.join(user.room);
 			const messages = await messageRepo.getlast30messages(eid);
 			console.log("emi", messages);
@@ -64,7 +64,8 @@ export default async (server, messageRepo, userRepo) => {
 			let newMessage = await messageRepo.addMessage(
 				user.room,
 				user.username,
-				jsonMsg.text
+				jsonMsg.text,
+				firstname
 			);
 			newMessage = {
 				...newMessage,
