@@ -75,10 +75,11 @@ class EventRepo {
 	}
 
 	// determines whether user has already joined the event or not
-	async checkEventParticipant(uid) {
+	async checkEventParticipant(uid, eid) {
 		const events = await this.dbConnection(tables.PARTICIPANTS)
-			.where({ uid: uid })
+			.where({ uid: uid, eid: eid })
 			.select();
+		console.log(events);
 		return events.length > 0;
 	}
 

@@ -150,12 +150,11 @@ export const deleteEventController = asyncHandler(
 export const jointEventController = asyncHandler(
 	async (req, res, next, eventRepo) => {
 		try {
-			const { uid } = req.body;
+			const { uid, eid } = req.body;
 			const accessRole = EventAccessRoles.READ;
 			if (!uid) {
 				throw new BadRequestError("User ID Missing");
 			}
-			const eid = req.params.eid;
 
 			if (!eid) {
 				throw new BadRequestError("Event ID Missing");
