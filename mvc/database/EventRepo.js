@@ -26,7 +26,16 @@ class EventRepo {
 	// gets required event from the db using eid
 	async getEventbyId(eid) {
 		let event = await this.dbConnection(tables.EVENTS)
-			.first()
+			.first(
+				`*`,
+				this.dbConnection(tables.PARTICIPANTS)
+					.count("*")
+					.whereRaw("?? = ??", [
+						`${tables.EVENTS}.eid`,
+						`${tables.PARTICIPANTS}.eid`,
+					])
+					.as("participants")
+			)
 			.where({ eid: eid });
 		console.log(event);
 		const p_list = await this.seeEventParticipants(eid);
@@ -168,8 +177,39 @@ class EventRepo {
 		return events;
 	}
 
-	async filterEvents(value) {
+	async filterUnAttendedEvents(value, uid) {
 		const events = await this.dbConnection(tables.EVENTS)
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`)
+			.whereNot({ uid: uid });
+		return events;
+	}
+
+	async filterAttendingEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.READ })
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`);
+		return events;
+	}
+
+	async filterMyEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.where({ uid: uid, accessrole: EventAccessRoles.READ })
 			.where("name", "like", `%${value}%`)
 			.orWhere("location", "like", `%${value}%`)
 			.orWhere("hostname", "like", `%${value}%`);

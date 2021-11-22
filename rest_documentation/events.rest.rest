@@ -38,7 +38,7 @@
 # Endpoint format: base_url/api/events
 
 # Uncomment line below
-# GET http://localhost:5002/api/events
+GET http://localhost:5002/api/events
 
 
 # fetch a single event by id 
