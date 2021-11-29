@@ -148,6 +148,7 @@ export const getUnAttendedEventsService = async (uid, eventRepo) => {
 		throw new BadRequestError("User ID Missing");
 	}
 
+	console.log(uid);
 	const responseData = await eventRepo.getUnAttendedEvents(uid);
 
 	if (responseData) {
@@ -204,7 +205,7 @@ export const filterUnAttendedEventsService = async (value, uid, eventRepo) => {
 		throw new BadRequestError("User ID Missing");
 	}
 
-	const responseData = await eventRepo.filterAttendingEvents(value, uid);
+	const responseData = await eventRepo.filterUnAttendedEvents(value, uid);
 
 	if (responseData) {
 		return responseData;
@@ -220,7 +221,7 @@ export const filterMyEventsService = async (value, uid, eventRepo) => {
 		throw new BadRequestError("No value provided to filter events.");
 	}
 
-	const responseData = await eventRepo.filterAttendingEvents(value, uid);
+	const responseData = await eventRepo.filterMyEvents(value, uid);
 
 	if (responseData) {
 		return responseData;
