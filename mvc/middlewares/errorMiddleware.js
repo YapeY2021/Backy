@@ -1,6 +1,5 @@
 // custom error handler
 const errorHandler = (err, req, res, next) => {
-	// console.log("error reached");
 	// console.log(err);
 	// handles the response's status code
 	const statusCode = err.statusCode ? err.statusCode : 500;

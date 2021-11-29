@@ -2,7 +2,9 @@ import express from "express";
 import {
 	createEventController,
 	deleteEventController,
-	filterEventsController,
+	filterAttendingEventsController,
+	filterMyEventsController,
+	filterUnAttendedEventsController,
 	getAttendingEventsController,
 	getChatsController,
 	getEventByIdController,
@@ -11,11 +13,13 @@ import {
 	getUnAttendedEventsController,
 	jointEventController,
 	seeEventParticipantsController,
+	sortAttendedEventController,
 	sortEventController,
+	sortUnattendedEventController,
 	updateEventController,
-	uploadImageController,
 } from "../controllers/eventControllers.js";
-import { getMyEventsService } from "../services/EventServices.js";
+import { protect } from "../middlewares/authMiddleware.js";
+import { filterMyEventsService } from "../services/EventServices.js";
 
 class EventRoute {
 	constructor(eventRepo) {
@@ -37,6 +41,20 @@ class EventRoute {
 			.get(async (req, res, next) =>
 				getUnAttendedEventsController(req, res, next, this.eventRepo)
 			);
+
+		this.router
+			.route("/new/:uid/filter")
+			.post(async (req, res, next) =>
+				filterUnAttendedEventsController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/new/sort")
+			.post(
+				protect,
+				async (req, res, next) => sortUnattendedEventController
+			);
+
 		this.router
 			.route("/")
 			.get(async (req, res, next) =>
@@ -60,11 +78,20 @@ class EventRoute {
 
 		//-----------------------------------Additional event related routes-----------------------------------------
 
+		this.router.route("/myevents/:uid").get(async (req, res, next) => {
+			getMyEventsController(req, res, next, this.eventRepo);
+		});
 		this.router
-			.route("/myevents/:uid")
-			.get(async (req, res, next) =>
-				getMyEventsController(req, res, next, this.eventRepo)
+			.route("/myevents/sort")
+			.post(protect, async (req, res, next) =>
+				sortAttendedEventController(req, res, next, this.eventRepo)
 			);
+
+		this.router
+			.route("/myevents/:uid/filter")
+			.post(async (req, res, next) => {
+				filterMyEventsController(req, res, next, this.eventRepo);
+			});
 
 		this.router
 			.route("/attendingevents/:uid")
@@ -73,9 +100,15 @@ class EventRoute {
 			);
 
 		this.router
-			.route("/filter")
+			.route("/attendingevents/sort")
+			.post(protect, async (req, res, next) =>
+				sortAttendedEventController(req, res, next, this.eventRepo)
+			);
+
+		this.router
+			.route("/attendingevents/:uid/filter")
 			.post(async (req, res, next) =>
-				filterEventsController(req, res, next, this.eventRepo)
+				filterAttendingEventsController(req, res, next, this.eventRepo)
 			);
 
 		this.router
@@ -87,7 +120,7 @@ class EventRoute {
 		this.router
 			.route("/:eid/join")
 			.post(async (req, res, next) =>
-				getAttendingEventsController(req, res, next, this.eventRepo)
+				jointEventController(req, res, next, this.eventRepo)
 			);
 
 		this.router
@@ -102,8 +135,6 @@ class EventRoute {
 
 		this.router.route("/:eid/chats").get(async (req, res, next) => {
 			const eid = req.params.eid;
-			console.log(eid);
-			console.log("reached here");
 			getChatsController(req, res, next, this.eventRepo);
 		});
 		return this.router;

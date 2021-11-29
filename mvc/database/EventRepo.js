@@ -33,14 +33,36 @@ class EventRepo {
 
 	// gets events from the db
 	async getEvents() {
-		const event = await this.dbConnection(tables.EVENTS).select();
+		const event = await this.dbConnection(tables.EVENTS).select(
+			`${tables.EVENTS}.eid`,
+			`${tables.EVENTS}.name`,
+			`${tables.EVENTS}.hostname`,
+			`${tables.EVENTS}.location`,
+			`${tables.EVENTS}.starttime`,
+			`${tables.EVENTS}.endtime`,
+			`${tables.EVENTS}.description`,
+			`${tables.EVENTS}.contactnumber`,
+			`${tables.EVENTS}.imageurl`,
+			`${tables.EVENTS}.created_at`,
+			`${tables.EVENTS}.updated_at`
+		);
 		return event;
 	}
 
 	// gets unattended events by the user
 	async getUnAttendedEvents(uid) {
 		const events = await this.dbConnection.raw(
-			`SELECT * FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
+			`SELECT ${tables.EVENTS}.eid,
+				${tables.EVENTS}.name,
+				${tables.EVENTS}.hostname,
+				${tables.EVENTS}.location,
+				${tables.EVENTS}.starttime,
+				${tables.EVENTS}.endtime,
+				${tables.EVENTS}.description,
+				${tables.EVENTS}.contactnumber,
+				${tables.EVENTS}.imageurl,
+				${tables.EVENTS}.created_at,
+				${tables.EVENTS}.updated_at FROM ${tables.EVENTS} WHERE eid NOT IN (SELECT eid FROM ${tables.PARTICIPANTS} WHERE ${tables.PARTICIPANTS}.uid = ${uid})`
 		);
 
 		if (events.rows) {
@@ -75,19 +97,23 @@ class EventRepo {
 	}
 
 	// determines whether user has already joined the event or not
-	async checkEventParticipant(uid) {
+	async checkEventParticipant(uid, eid) {
 		const events = await this.dbConnection(tables.PARTICIPANTS)
-			.where({ uid: uid })
+			.where({ uid: uid, eid: eid })
 			.select();
+		console.log(events);
 		return events.length > 0;
 	}
 
 	// adds user to the event participants table
 	async joinEvent(uid, eid, accessRole) {
-		const event = await this.dbConnection(tables.PARTICIPANTS)
+		const events = await this.dbConnection(tables.PARTICIPANTS)
 			.insert({ eid: eid, uid: uid, accessrole: accessRole })
 			.returning("*");
-		return event;
+		if (events.length > 0) {
+			return events[0];
+		}
+		return null;
 	}
 
 	// fetches all the event participants
@@ -115,7 +141,19 @@ class EventRepo {
 				`${tables.EVENTS}.eid`,
 				`${tables.PARTICIPANTS}.eid`
 			)
-			.select()
+			.select(
+				`${tables.EVENTS}.eid`,
+				`${tables.EVENTS}.name`,
+				`${tables.EVENTS}.hostname`,
+				`${tables.EVENTS}.location`,
+				`${tables.EVENTS}.starttime`,
+				`${tables.EVENTS}.endtime`,
+				`${tables.EVENTS}.description`,
+				`${tables.EVENTS}.contactnumber`,
+				`${tables.EVENTS}.imageurl`,
+				`${tables.EVENTS}.created_at`,
+				`${tables.EVENTS}.updated_at`
+			)
 			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
 		return events;
 	}
@@ -128,13 +166,98 @@ class EventRepo {
 				`${tables.EVENTS}.eid`,
 				`${tables.PARTICIPANTS}.eid`
 			)
-			.select()
+			.select(
+				`${tables.EVENTS}.eid`,
+				`${tables.EVENTS}.name`,
+				`${tables.EVENTS}.hostname`,
+				`${tables.EVENTS}.location`,
+				`${tables.EVENTS}.starttime`,
+				`${tables.EVENTS}.endtime`,
+				`${tables.EVENTS}.description`,
+				`${tables.EVENTS}.contactnumber`,
+				`${tables.EVENTS}.imageurl`,
+				`${tables.EVENTS}.created_at`,
+				`${tables.EVENTS}.updated_at`
+			)
 			.where({ uid: uid, accessrole: EventAccessRoles.READ });
 		return events;
 	}
 
-	async filterEvents(value) {
-		const events = await this.dbConnection(tables.EVENTS)
+	async filterUnAttendedEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.whereNot({ uid: uid })
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`)
+			.select(
+				`${tables.EVENTS}.eid`,
+				`${tables.EVENTS}.name`,
+				`${tables.EVENTS}.hostname`,
+				`${tables.EVENTS}.location`,
+				`${tables.EVENTS}.starttime`,
+				`${tables.EVENTS}.endtime`,
+				`${tables.EVENTS}.description`,
+				`${tables.EVENTS}.contactnumber`,
+				`${tables.EVENTS}.imageurl`,
+				`${tables.EVENTS}.created_at`,
+				`${tables.EVENTS}.updated_at`
+			);
+		return events;
+	}
+
+	async filterAttendingEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select(
+				`${tables.EVENTS}.eid`,
+				`${tables.EVENTS}.name`,
+				`${tables.EVENTS}.hostname`,
+				`${tables.EVENTS}.location`,
+				`${tables.EVENTS}.starttime`,
+				`${tables.EVENTS}.endtime`,
+				`${tables.EVENTS}.description`,
+				`${tables.EVENTS}.contactnumber`,
+				`${tables.EVENTS}.imageurl`,
+				`${tables.EVENTS}.created_at`,
+				`${tables.EVENTS}.updated_at`
+			)
+			.where({ uid: uid, accessrole: EventAccessRoles.READ })
+			.where("name", "like", `%${value}%`)
+			.orWhere("location", "like", `%${value}%`)
+			.orWhere("hostname", "like", `%${value}%`);
+		return events;
+	}
+
+	async filterMyEvents(value, uid) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select(
+				`${tables.EVENTS}.eid`,
+				`${tables.EVENTS}.name`,
+				`${tables.EVENTS}.hostname`,
+				`${tables.EVENTS}.location`,
+				`${tables.EVENTS}.starttime`,
+				`${tables.EVENTS}.endtime`,
+				`${tables.EVENTS}.description`,
+				`${tables.EVENTS}.contactnumber`,
+				`${tables.EVENTS}.imageurl`,
+				`${tables.EVENTS}.created_at`,
+				`${tables.EVENTS}.updated_at`
+			)
+			.where({ uid: uid, accessrole: EventAccessRoles.HOST })
 			.where("name", "like", `%${value}%`)
 			.orWhere("location", "like", `%${value}%`)
 			.orWhere("hostname", "like", `%${value}%`);
@@ -146,6 +269,33 @@ class EventRepo {
 			sort,
 			order
 		);
+		return events;
+	}
+
+	async sortUnattendedEvents(uid, sort, order) {
+		const events = await this.dbConnection(tables.EVENTS)
+			.orderBy(sort, order)
+			.where(uid != uid);
+		return events;
+	}
+
+	async sortAttendedEvents(uid, sort, order) {
+		const events = await this.dbConnection(tables.EVENTS)
+			.orderBy(sort, order)
+			.where((uid = uid));
+		return events;
+	}
+
+	async sortMyEvents(uid, sort, order) {
+		const events = await this.dbConnection(tables.PARTICIPANTS)
+			.join(
+				tables.EVENTS,
+				`${tables.EVENTS}.eid`,
+				`${tables.PARTICIPANTS}.eid`
+			)
+			.select()
+			.orderBy(sort, order)
+			.where({ uid: uid, accessrole: EventAccessRoles.HOST });
 		return events;
 	}
 

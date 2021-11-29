@@ -3,8 +3,6 @@ class EventRepoMock {
 
 	async getEvents() {}
 
-	async createEvent(eventInfo) {}
-
 	async getMyEvents(uid) {}
 
 	async getAttendingEvents(uid) {}
@@ -25,7 +23,7 @@ class EventRepoMock {
 
 	async deleteUser(eid) {}
 
-	async checkEventParticipant(uid) {}
+	async checkEventParticipant(uid, eid) {}
 
 	async joinEvent(uid, eid, accessRole) {}
 

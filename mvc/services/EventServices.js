@@ -18,7 +18,6 @@ export const createEventService = async (eventInfo, eventRepo) => {
 	if (!eventInfo.hostname) {
 		throw new BadRequestError("Host name missing");
 	}
-
 	const createdEvent = await eventRepo.createEvent(eventInfo);
 
 	if (createdEvent) {
@@ -113,14 +112,13 @@ export const jointEventService = async (uid, eid, accessRole, eventRepo) => {
 		throw new BadRequestError("Event ID Missing");
 	}
 
-	const participantExists = await eventRepo.checkEventParticipant(uid);
+	const participantExists = await eventRepo.checkEventParticipant(uid, eid);
 
 	if (participantExists) {
 		throw new BadRequestError("Already joined the event");
 	}
 
 	const responseData = await eventRepo.joinEvent(uid, eid, accessRole);
-
 	if (responseData) {
 		return responseData;
 	} else {
@@ -134,7 +132,6 @@ export const getMyEventsService = async (uid, eventRepo) => {
 	if (!uid) {
 		throw new BadRequestError("User ID Missing");
 	}
-
 	const responseData = await eventRepo.getMyEvents(uid);
 
 	if (responseData) {
@@ -151,6 +148,7 @@ export const getUnAttendedEventsService = async (uid, eventRepo) => {
 		throw new BadRequestError("User ID Missing");
 	}
 
+	console.log(uid);
 	const responseData = await eventRepo.getUnAttendedEvents(uid);
 
 	if (responseData) {
@@ -178,13 +176,52 @@ export const getAttendingEventsService = async (uid, eventRepo) => {
 	}
 };
 
-// filters events based on the value provided by the user
-export const filterEventsService = async (value, eventRepo) => {
+export const filterAttendingEventsService = async (value, uid, eventRepo) => {
 	if (!value) {
 		throw new BadRequestError("No value provided to filter events.");
 	}
 
-	const responseData = await eventRepo.filterEvents(value);
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.filterAttendingEvents(value, uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const filterUnAttendedEventsService = async (value, uid, eventRepo) => {
+	if (!value) {
+		throw new BadRequestError("No value provided to filter events.");
+	}
+
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+
+	const responseData = await eventRepo.filterUnAttendedEvents(value, uid);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const filterMyEventsService = async (value, uid, eventRepo) => {
+	if (!value) {
+		throw new BadRequestError("No value provided to filter events.");
+	}
+
+	const responseData = await eventRepo.filterMyEvents(value, uid);
 
 	if (responseData) {
 		return responseData;
@@ -197,11 +234,99 @@ export const filterEventsService = async (value, eventRepo) => {
 
 // sort events based on the value provided by the user
 export const sortEventService = async (
+	uid,
 	sort = EVENTSORT.NAME,
 	order = SORTORDER.ASC,
 	eventRepo
 ) => {
-	const responseData = await eventRepo.sortEvents(sort, order);
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
+	const responseData = await eventRepo.sortEvents(uid, sort, order);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const sortUnattendedEventService = async (
+	uid,
+	sort = EVENTSORT.NAME,
+	order = SORTORDER.ASC,
+	eventRepo
+) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
+	const responseData = await eventRepo.sortUnattendedEvents(uid, sort, order);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const sortAttendedEventService = async (
+	uid,
+	sort = EVENTSORT.NAME,
+	order = SORTORDER.ASC,
+	eventRepo
+) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
+	const responseData = await eventRepo.sortAttendedEvents(uid, sort, order);
+
+	if (responseData) {
+		return responseData;
+	} else {
+		throw new InternalServerError(
+			"Something went wrong while fetching events."
+		);
+	}
+};
+
+export const sortMyEventsService = async (
+	sort = EVENTSORT.NAME,
+	order = SORTORDER.ASC,
+	eventRepo
+) => {
+	if (!uid) {
+		throw new BadRequestError("User ID Missing");
+	}
+	if (!sort) {
+		throw new BadRequestError("Sort Missing");
+	}
+	if (!order) {
+		throw new BadRequestError("Order Missing");
+	}
+
+	const responseData = await eventRepo.sortMyEvents(uid, sort, order);
 
 	if (responseData) {
 		return responseData;
