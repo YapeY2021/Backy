@@ -111,9 +111,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	// });
 
 	it("POST /api/events -> create a new event without event name and host name", async () => {
-		// const hostname = faker.company.catchPhrase();
-		// const name = faker.commerce.productName();
-		const response = await request
+		await request
 			.post("/api/events/")
 			.send({})
 			.expect("Content-Type", /json/)
@@ -121,9 +119,8 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	});
 
 	it("POST /api/events -> create a new event without host name - 400", async () => {
-		// const hostname = faker.company.catchPhrase();
 		const name = faker.commerce.productName();
-		const response = await request
+		await request
 			.post("/api/events/")
 			.send({ name })
 			.expect("Content-Type", /json/)
@@ -132,8 +129,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 
 	it("POST /api/events -> create a new event without event name -400", async () => {
 		const hostname = faker.company.catchPhrase();
-		// const name = faker.commerce.productName();
-		const response = await request
+		await request
 			.post("/api/events/")
 			.send({ hostname })
 			.expect("Content-Type", /json/)
@@ -143,7 +139,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	it("POST /api/events -> event occured while creating event in db -500", async () => {
 		var repoStub = sinon
 			.stub(db, "createEvent")
-			.callsFake(() => Promise.resolve(mull));
+			.callsFake(() => Promise.resolve(null));
 		const hostname = faker.company.catchPhrase();
 		const name = faker.commerce.productName();
 		const response = await request
@@ -156,9 +152,6 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	});
 
 	it("POST /api/events -> create a new event", async () => {
-		var repoStub = sinon
-			.stub(db, "createEvent")
-			.callsFake(() => Promise.resolve(dummyEvent1));
 		const hostname = faker.company.catchPhrase();
 		const name = faker.commerce.productName();
 		const response = await request
@@ -167,7 +160,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.expect("Content-Type", /json/)
 			.expect(200);
 		if (response.body && response.body.length > 0) {
-			expect(response.body[0]).toEqual(
+			expect(response.body).toEqual(
 				expect.objectContaining({
 					name: expect.any(String),
 					hostname: expect.any(String),
@@ -175,7 +168,6 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 				})
 			);
 		}
-		repoStub.restore();
 	});
 
 	//----------------------join event feature-----------------------------
@@ -208,37 +200,43 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.expect(400);
 	});
 
-	it("POST /api/events/:uid/join -> already joined event", async () => {
-		const eid = 1;
+	it("POST /api/events/:uid/join -> join new valid email", async () => {
+		const eid = 16;
 		const uid = 1;
-		var repoStub = sinon
-			.stub(db, "checkEventParticipant")
-			.callsFake(() => Promise.resolve(true));
+		const response = await request
+			.post(`/api/events/${eid}/join`)
+			.send({ eid, uid })
+			.expect("Content-Type", /json/)
+			.expect(200);
+		expect(response.body).toEqual(
+			expect.objectContaining({
+				eid: expect.any(Number),
+				uid: expect.any(Number),
+				accessrole: expect.any(String),
+			})
+		);
+	});
+
+	it("POST /api/events/:uid/join -> already joined event", async () => {
+		const eid = 17;
+		const uid = 1;
+		const response = await request
+			.post(`/api/events/${eid}/join`)
+			.send({ eid, uid })
+			.expect("Content-Type", /json/)
+			.expect(200);
+		expect(response.body).toEqual(
+			expect.objectContaining({
+				eid: expect.any(Number),
+				uid: expect.any(Number),
+				accessrole: expect.any(String),
+			})
+		);
 		await request
 			.post(`/api/events/${eid}/join`)
 			.send({ uid, eid })
 			.expect("Content-Type", /json/)
 			.expect(400);
-		repoStub.restore();
-	});
-
-	it("POST /api/events/:uid/join -> join new valid email", async () => {
-		const eid = 1;
-		const uid = 1;
-		var repoStub1 = sinon
-			.stub(db, "checkEventParticipant")
-			.callsFake(() => Promise.resolve(false));
-		var repoStub2 = sinon
-			.stub(db, "joinEvent")
-			.callsFake(() => Promise.resolve({ a: 1 }));
-		await request
-			.post(`/api/events/${eid}/join`)
-			.send({ eid, uid })
-			.expect("Content-Type", /json/)
-			.expect(200);
-
-		repoStub1.restore();
-		repoStub2.restore();
 	});
 
 	//------------------------------------------------GET----------------------------------------
@@ -263,9 +261,6 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 	});
 
 	it("GET /api/events -> get list of valid events ", async () => {
-		var repoStub = sinon
-			.stub(db, "getEvents")
-			.callsFake(() => Promise.resolve([dummyEvent1]));
 		const response = await request
 			.get("/api/events/")
 			.expect("Content-Type", /json/)
@@ -279,31 +274,28 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 				})
 			);
 		}
-		repoStub.restore();
 	});
 
 	it("GET /api/events/:id -> event does not exist 404 ", async () => {
-		var repoStub = sinon
-			.stub(db, "getEventbyId")
-			.callsFake(() => Promise.resolve(null));
+		const eid = -1;
 		await request
-			.get("/api/events/-1")
+			.get(`/api/events/${eid}`)
 			.expect("Content-Type", /json/)
 			.expect(404);
-
-		repoStub.restore();
 	});
 
 	it("GET /api/events/:id -> event exists 200 ", async () => {
-		var repoStub = sinon
-			.stub(db, "getEventbyId")
-			.callsFake(() => Promise.resolve(dummyEvent1));
-		await request
+		const response = await request
 			.get("/api/events/1")
 			.expect("Content-Type", /json/)
 			.expect(200);
-
-		repoStub.restore();
+		expect(response.body).toEqual(
+			expect.objectContaining({
+				name: expect.any(String),
+				hostname: expect.any(String),
+				eid: expect.any(Number),
+			})
+		);
 	});
 
 	//--------UPDATE

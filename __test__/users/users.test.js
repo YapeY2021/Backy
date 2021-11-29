@@ -17,13 +17,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 	// SECTION : POST API
 	it("POST /api/users/signup with missing email -> 400 ", async () => {
 		// we are using faker dev dependency for fake username, password, and name
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
-		// const email = `${firstName[0]}${lastName}@patriots.uttyler.edu`;
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
+		// const email = `${firstname[0]}${lastname}@patriots.uttyler.edu`;
 		const password = "password";
 		const response = await request.post("/api/users/signup").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			// email,
 			password,
 		});
@@ -32,13 +32,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/signup with wrong email address -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
 		const password = faker.internet.password();
 
 		const response = await request.post("/api/users/signup").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			email,
 			password,
 		});
@@ -47,13 +47,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/signup with missing password -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
 		// const password = faker.internet.password();
 
 		const response = await request.post("/api/users/signup").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			email,
 			//   password,
 		});
@@ -62,13 +62,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/signup with short password -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
 		const password = "123";
 
 		const response = await request.post("/api/users/signup").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			email,
 			password,
 		});
@@ -77,20 +77,20 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/signup -->  registers new user", async () => {
 		// we are using faker dev dependency for fake username, password, and name
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
-		const email = `${firstName[0]}${lastName}@patriots.uttyler.edu`;
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
+		const email = `${firstname[0]}${lastname}@patriots.uttyler.edu`;
 		const password = "password";
-		const phoneNumber = faker.phone.phoneNumber();
+		const phonenumber = faker.phone.phoneNumber();
 
 		const response = await request
 			.post("/api/users/signup")
 			.send({
 				email,
-				firstName,
-				lastName,
+				firstname,
+				lastname,
 				password,
-				phoneNumber,
+				phonenumber,
 			})
 			.expect("Content-Type", /json/)
 			.expect(201);
@@ -105,20 +105,20 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/signup -->  user account already exists", async () => {
 		// we are using faker dev dependency for fake username, password, and name
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
-		const email = `${firstName[0]}${lastName}@patriots.uttyler.edu`;
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
+		const email = `${firstname[0]}${lastname}@patriots.uttyler.edu`;
 		const password = "password";
-		const phoneNumber = faker.phone.phoneNumber();
+		const phonenumber = faker.phone.phoneNumber();
 
 		const response = await request
 			.post("/api/users/signup")
 			.send({
 				email,
-				firstName,
-				lastName,
+				firstname,
+				lastname,
 				password,
-				phoneNumber,
+				phonenumber,
 			})
 			.expect("Content-Type", /json/)
 			.expect(201);
@@ -134,10 +134,10 @@ describe("Tests all CRUD functions for USER Service ", () => {
 			.post("/api/users/signup")
 			.send({
 				email,
-				firstName,
-				lastName,
+				firstname,
+				lastname,
 				password,
-				phoneNumber,
+				phonenumber,
 			})
 			.expect("Content-Type", /json/)
 			.expect(400);
@@ -147,13 +147,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 	// SECTION : POST API
 	it("POST /api/users/login with missing email -> 400 ", async () => {
 		// we are using faker dev dependency for fake username, password, and name
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
-		// const email = `${firstName[0]}${lastName}@patriots.uttyler.edu`;
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
+		// const email = `${firstname[0]}${lastname}@patriots.uttyler.edu`;
 		const password = "password";
 		const response = await request.post("/api/users/login").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			// email,
 			password,
 		});
@@ -162,13 +162,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/login with wrong email address -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
 		const password = faker.internet.password();
 
 		const response = await request.post("/api/users/login").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			email,
 			password,
 		});
@@ -177,13 +177,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/login with missing password -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
 		// const password = faker.internet.password();
 
 		const response = await request.post("/api/users/login").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			email,
 			//   password,
 		});
@@ -192,13 +192,13 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/login with short password -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
-		const lastName = faker.name.lastName();
+		const firstname = faker.name.firstName();
+		const lastname = faker.name.lastName();
 		const password = "123";
 
 		const response = await request.post("/api/users/login").send({
-			firstName,
-			lastName,
+			firstname,
+			lastname,
 			email,
 			password,
 		});
@@ -207,7 +207,7 @@ describe("Tests all CRUD functions for USER Service ", () => {
 
 	it("POST /api/users/login with valid email -> 400 ", async () => {
 		const email = faker.internet.email().toLowerCase();
-		const firstName = faker.name.firstName();
+		const firstname = faker.name.firstName();
 		const lastName = faker.name.lastName();
 		const password = "123";
 
@@ -216,7 +216,7 @@ describe("Tests all CRUD functions for USER Service ", () => {
 			.callsFake(() => Promise.resolve(true));
 
 		const response = await request.post("/api/users/login").send({
-			firstName,
+			firstname,
 			lastName,
 			email,
 			password,
