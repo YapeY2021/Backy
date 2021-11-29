@@ -40,7 +40,17 @@ export const createEventController = asyncHandler(
 				throw new BadRequestError("Event Name Missing");
 			}
 
-			const responseData = await createEventService(eventInfo, eventRepo);
+			const { uid } = req.userInfo;
+
+			if (!uid) {
+				throw new NotFoundError("User ID Missing");
+			}
+
+			const responseData = await createEventService(
+				eventInfo,
+				eventRepo,
+				uid
+			);
 
 			res.status(200).json(responseData);
 		} catch (e) {
@@ -97,7 +107,6 @@ export const updateEventController = asyncHandler(
 				throw new NotFoundError("Event ID Missing");
 			}
 
-			console.log(eid, eventInfo);
 			//Event name missing added
 			if (!eventInfo.name) {
 				throw new BadRequestError("Event Name Missing");
@@ -187,6 +196,7 @@ export const seeEventParticipantsController = asyncHandler(
 			if (!eid) {
 				throw new BadRequestError("Event ID Missing");
 			}
+
 			const responseData = await seeEventParticipantsService(
 				eid,
 				eventRepo

@@ -9,8 +9,9 @@ import {
 	InternalServerError,
 	NotFoundError,
 } from "../../utilities/types/Errors.js";
+import { EventAccessRoles } from "../../utilities/types/EventAccessRoles.js";
 
-export const createEventService = async (eventInfo, eventRepo) => {
+export const createEventService = async (eventInfo, eventRepo, uid) => {
 	if (!eventInfo.name) {
 		throw new BadRequestError("Event name missing");
 	}
@@ -18,7 +19,14 @@ export const createEventService = async (eventInfo, eventRepo) => {
 	if (!eventInfo.hostname) {
 		throw new BadRequestError("Host name missing");
 	}
+
+	if (!uid) {
+		throw new NotFoundError("User ID Missing");
+	}
+
 	const createdEvent = await eventRepo.createEvent(eventInfo);
+
+	await eventRepo.joinEvent(uid, createdEvent.eid, EventAccessRoles.HOST);
 
 	if (createdEvent) {
 		return createdEvent;

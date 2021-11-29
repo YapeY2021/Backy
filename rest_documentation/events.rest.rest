@@ -11,13 +11,14 @@
 # Rest of the fields are optional
 
 # Uncomment line below
-# POST http://localhost:5002/api/events HTTP/1.1
-# content-type: application/json
+POST http://localhost:5002/api/events HTTP/1.1
+content-type: application/json
 
-# {
-#     "name": "asdgasd",
-#     "hostname": "amir"x
-# }
+{
+    "name": "Test Event",
+    "hostname": "amir",
+    "accessrole":"HOST"
+}
 
 
 # Join/Attend an event
@@ -38,7 +39,7 @@
 # Endpoint format: base_url/api/events
 
 # Uncomment line below
-GET http://localhost:5002/api/events
+# GET http://localhost:5002/api/events
 
 # fetches all the events from the backend unattended by user
 # Endpoint format: base_url/api/events/new/:uid
@@ -91,7 +92,7 @@ GET http://localhost:5002/api/events
 # Endpoint format: base_url/api/events/myevents/:uid where uid is user id
 
 # Uncomment line below
-# GET http://localhost:5002/api/events/myevents/
+# GET http://localhost:5002/api/events/myevents/1
 
 
 
