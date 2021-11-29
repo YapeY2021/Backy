@@ -142,7 +142,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 			.callsFake(() => Promise.resolve(null));
 		const hostname = faker.company.catchPhrase();
 		const name = faker.commerce.productName();
-		const response = await request
+		await request
 			.post("/api/events/")
 			.send({ hostname, name })
 			.expect("Content-Type", /json/)
@@ -252,7 +252,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		var repoStub = sinon
 			.stub(db, "getEvents")
 			.callsFake(() => Promise.resolve([]));
-		const response = await request
+		await request
 			.get("/api/events/")
 			.expect("Content-Type", /json/)
 			.expect(404);
@@ -260,6 +260,7 @@ describe("Tests all CRUD functions for EVENT Service ", () => {
 		repoStub.restore();
 	});
 
+	// -----------------------------------------------------GET---------------------------------------------------------
 	it("GET /api/events -> get list of valid events ", async () => {
 		const response = await request
 			.get("/api/events/")

@@ -40,6 +40,6 @@ server.listen(PORT, async () => {
 });
 
 // wraps our server application
-WebSocketWrapper(server, appManager.MessageRepo);
+WebSocketWrapper(server, appManager.MessageRepo, appManager.UserRepo);
 
 export default app;

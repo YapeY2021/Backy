@@ -49,7 +49,6 @@ export const getEventByIdService = async (eid, eventRepo) => {
 		throw new BadRequestError("Invalid Event ID");
 	}
 	const event = await eventRepo.getEventbyId(eid);
-
 	//if event does not exists
 	if (!event) {
 		throw new NotFoundError("Event does not exist.");
@@ -59,8 +58,9 @@ export const getEventByIdService = async (eid, eventRepo) => {
 
 export const updateEventService = async (eid, eventInfo, eventRepo) => {
 	// checks whether the event exists in the database
+	console.log("reached here");
 	const eventExists = await eventRepo.checkEventbyId(eid);
-
+	console.log(eventExists);
 	//if event does not exists
 	if (!eventExists) {
 		throw new NotFoundError("Event does not exist.");

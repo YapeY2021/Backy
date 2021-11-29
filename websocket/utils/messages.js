@@ -1,9 +1,11 @@
 import moment from "moment";
 
-function formatMessage(username, text) {
+function formatMessage(uid, eid, text, name) {
 	return {
-		username,
+		uid,
+		eid,
 		text,
+		name,
 		time: moment().format("h:mm a"),
 	};
 }

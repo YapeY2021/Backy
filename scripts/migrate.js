@@ -82,9 +82,10 @@ export const Migrate = async (dbConnection) => {
 					.inTable(tables.EVENTS)
 					.onUpdate("CASCADE")
 					.onDelete("CASCADE");
-				table.string("senderid", 100);
+				table.integer("uid");
 				table.string("text", 100);
-				table.timestamp("createdAt").defaultTo(dbConnection.fn.now());
+				table.string("firstname", 100);
+				table.timestamps(true, true);
 			});
 		console.log(`Created ${tables.MESSAGE} relation.`);
 
