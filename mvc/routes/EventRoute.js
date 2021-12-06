@@ -32,7 +32,7 @@ class EventRoute {
 		//-----------------------------------Events related routes----------------------------------------------
 		this.router
 			.route("/")
-			.post(async (req, res, next) =>
+			.post(protect, async (req, res, next) =>
 				createEventController(req, res, next, this.eventRepo)
 			);
 
